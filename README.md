@@ -47,7 +47,7 @@ This version exclude the rocksdb engine, which is not supported anymore.
 
 | Package         | Version     | Note                  |
 | --------------- | ----------- | --------------------- |
-| mongodb         | `3.6.12`    |                       |
+| mongodb         | `3.6.6`    |                       |
 | ~~mongo-rocks~~ | ~~`3.4.7`~~ | Not supported anymore |
 | mongo-tools     | `3.6.12`    |                       |
 | ~~rocksdb~~     | ~~`3.4.7`~~ | Not supported anymore |
