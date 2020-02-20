@@ -1,0 +1,8 @@
+processes:
+  - name: cfgsvr
+    executable: /var/vcap/packages/mongodb/bin/mongod
+    persistent_disk: true
+    ephemeral_disk: true
+    args:
+    - --config
+    - /var/vcap/jobs/cfgsvr/config/mongodb.conf
