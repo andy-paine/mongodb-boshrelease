@@ -1,35 +1,13 @@
 #!/usr/bin/env bash
-set -eu
+set -eux
 
-export JOBS_COMMON_DIR='/var/vcap/packages/mongodb-jobs-common'
-source ${JOBS_COMMON_DIR}/bin/setenv cfgsvr
-source ${JOBS_COMMON_DIR}/bin/mdb-functions
+LOG_DIR=/var/vcap/sys/log/cfgsvr
+mkdir -p $LOG_DIR
+chown -R vcap:vcap $LOG_DIR
 
-if [ $(check_ssl) -eq 0 ]
-then
-  export MONGO_CMD="${JOBS_COMMON_DIR}/bin/mongo.sh"
-else
-  # Generate the certificates
-  ${JOBS_COMMON_DIR}/bin/generate_ssl_cert.sh
-  export MONGO_CMD="${JOBS_COMMON_DIR}/bin/mongo-ssl.sh"
-fi
+exec >> ${LOG_DIR}/pre-start.stdout.log
+exec 2>> ${LOG_DIR}/pre-start.stderr.log
 
-system_update            # Updating system mandatories
-rights_and_directories   # Create Mongodb directories and update rights on keyfile
-
-export MONGO_CMD_PARAM="--quiet"
-
-if [ $(check_password) -eq 1 ]
-then
-  update_password
-fi  
-
-start_mongod_noauth          # Start mongod without authentication
-
-run_replicaset
-
-kill_and_wait ${PIDFILE}
-
-${JOB_DIR}/bin/cfgsvr_ctl start 
-
-exit 0
+mkdir -p /var/vcap/store/cfgsvr/data
+chown -R vcap:vcap /var/vcap/store/cfgsvr
+/var/vcap/jobs/cfgsvr/bin/generate_ssl_cert
