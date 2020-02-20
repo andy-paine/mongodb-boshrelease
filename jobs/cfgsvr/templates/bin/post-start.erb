@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -eu
+<%-
+  rs_config = <<-EOCONFIG
+  {
+    _id : "#{p('replication.replica_set_name')}",
+    members: [
+      { _id: "#{spec.id}", host: "#{spec.address}:#{p('port')}" },
+    ]
+  }
+  EOCONFIG
+%>
+# Intialize replicaset if needed
+/var/vcap/jobs/cfgsvr/bin/mongo --eval 'rs.initiate(<%= rs_config %>) || quit()'
+# Add this host to replicaset if needed
+/var/vcap/jobs/cfgsvr/bin/mongo --eval 'rs.add( { host: "<%= spec.address %>:<%= p('port') %>", priority: 0, votes: 0 } ) || quit()'
