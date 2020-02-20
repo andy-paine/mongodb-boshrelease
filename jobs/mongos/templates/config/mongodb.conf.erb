@@ -7,7 +7,6 @@ Sys_Db_dirCfg="/var/vcap/jobs/mongos/config"
 Sys_Db_dirSSL="/var/vcap/jobs/mongos/ssl"
 Sys_Db_dirData="/var/vcap/store/mongos/data"
 Sys_Db_dirLog="/var/vcap/sys/log/mongos"
-Sys_Db_dirRun="/var/vcap/sys/run/mongos"
 
 # Mongodb configuration parameters
 Conf_systemLog = Sys_Db_dirLog + "/mongos.log"
@@ -30,14 +29,12 @@ systemLog:
   path: <%= Conf_systemLog %>
   logAppend: true
   logRotate: reopen
-processManagement:
-  fork: true
 net:
   bindIp: <%= Conf_bindIp %>
   port: <%= Conf_port %>
   unixDomainSocket:
     enabled: true
-    pathPrefix: <%= Sys_Db_dirRun %>
+    pathPrefix: /var/vcap/data/mongos
 <%- if link('config-server').p("require_ssl") == 1 -%>
   ssl:
     mode: requireSSL

@@ -39,6 +39,18 @@ properties:
       default: 27018
       description: Default mongodb port for replicasets AND standalone server
 
+  users:
+    default: []
+    description: Users to create in this replicaset
+    example: |
+      - name: admin
+        password: foo
+        roles:
+        - role: read
+          db: admin
+        - role: write
+          db: config
+
   storage_engine:
       default: wiredTiger
       description: |
