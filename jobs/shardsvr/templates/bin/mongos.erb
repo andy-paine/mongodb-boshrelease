@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# TODO: Use just link().address instead of link().instances[0].address when DNS works
+/var/vcap/packages/mongodb/bin/mongo \
+  <%= link('routing-service').instances[0].address %>:<%= link('routing-service').p('port') %> \
+  --ssl --sslPEMKeyFile /var/vcap/jobs/shardsvr/ssl/mongodb.pem \
+  --sslCAFile /var/vcap/jobs/shardsvr/ssl/CA.crt \
+  --authenticationDatabase '$external' \
+  --authenticationMechanism MONGODB-X509 "$@"

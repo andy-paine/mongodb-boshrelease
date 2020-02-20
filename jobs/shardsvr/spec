@@ -2,7 +2,6 @@
 name: shardsvr
 packages:
   - mongodb
-  - mongodb-jobs-common
 
 consumes:
   - name: shard-server
@@ -12,7 +11,7 @@ consumes:
     type: cfgsvr
 
   - name: routing-service
-    type: mongos  
+    type: mongos
 
 provides:
   - name: shard-server
@@ -23,12 +22,14 @@ provides:
     - enable_role_based_access_control
 
 templates:
-  bin/mdb-variables.sh.erb: bin/mdb-variables.sh
+  bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   bin/pre-start: bin/pre-start
-  bin/post-deploy: bin/post-deploy
-  bin/drain: bin/drain  
-  bin/shardsvr_ctl : bin/shardsvr_ctl
-  config/shardsvr.conf.erb: config/shardsvr.conf
+  bin/post-start.erb: bin/post-start
+  bin/drain: bin/drain
+  bin/mongo.erb : bin/mongo
+  bin/mongos.erb : bin/mongos
+  config/bpm.yml.erb: config/bpm.yml
+  config/mongodb.conf.erb: config/mongodb.conf
   config/keyfile.erb: config/keyfile
   ssl/CA.key.erb: ssl/CA.key
   ssl/CA.crt.erb: ssl/CA.crt

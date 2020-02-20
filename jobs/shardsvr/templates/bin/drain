@@ -29,10 +29,10 @@ exec \
     2> >(prepend_datetime >> /var/vcap/sys/log/shardsvr/drain.stderr.log)
 
 JOBS_COMMON_DIR='/var/vcap/packages/mongodb-jobs-common'
-source ${JOBS_COMMON_DIR}/bin/setenv shardsvr
-source ${JOBS_COMMON_DIR}/bin/mdb-functions
+#source ${JOBS_COMMON_DIR}/bin/setenv shardsvr
+#source ${JOBS_COMMON_DIR}/bin/mdb-functions
 
-echo "current_state : ${BOSH_JOB_STATE} next_state:${BOSH_JOB_NEXT_STATE}" 
+echo "current_state : ${BOSH_JOB_STATE} next_state:${BOSH_JOB_NEXT_STATE}"
 
 if echo "${BOSH_JOB_NEXT_STATE}" | grep '"persistent_disk":0'
 then
@@ -43,7 +43,7 @@ then
 	if [ ${property_replication_enable} -eq 1 ]
 	then
         REMOVED=1
-	    rs_scaleIn # remove the node from replicaset
+	    #rs_scaleIn # remove the node from replicaset
 	fi
-    
+
 fi
