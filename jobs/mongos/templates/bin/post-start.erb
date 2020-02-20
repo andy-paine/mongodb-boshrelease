@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -eux
+<% for user in p('users') %>
+<%-
+  require 'json'
+  user_config = <<-EOCONFIG
+  {
+    user: "#{user['name']}",
+    pwd: "#{user['password']}",
+    roles: #{JSON.dump user['roles']}
+  }
+  EOCONFIG
+%>
+/var/vcap/jobs/mongos/bin/mongo <<'EOCOMMAND'
+use admin
+db.createUser({
+  user: "<%= user['name'] %>",
+  pwd: "<%= user['password'] %>",
+  roles: <%= JSON.dump user['roles'] %>
+})
+quit()
+EOCOMMAND
+<% end %>

@@ -18,18 +18,31 @@ provides:
     - port
 
 templates:
-  bin/mdb-variables.sh.erb: bin/mdb-variables.sh
+  bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   bin/pre-start: bin/pre-start
-  bin/mongos_ctl : bin/mongos_ctl
-  config/mongos.conf.erb: config/mongos.conf
+  bin/post-start.erb: bin/post-start
+  bin/mongo.erb: bin/mongo
+  config/bpm.yml.erb: config/bpm.yml
+  config/mongodb.conf.erb: config/mongodb.conf
   config/keyfile.erb: config/keyfile
   ssl/CA.key.erb: ssl/CA.key
   ssl/CA.crt.erb: ssl/CA.crt
 
 properties:
   port:
-      default: 27017
-      description: Default mongodb port for mongos
+    default: 27017
+    description: Default mongodb port for mongos
   deployment_timeout:
-      default: 120
-      description: The maximum time to wait for config-server availability before exiting with error
+    default: 120
+    description: The maximum time to wait for config-server availability before exiting with error
+  users:
+    default: []
+    description: Users to create in the database
+    example: |
+      - name: admin
+        password: foo
+        roles:
+        - role: read
+          db: admin
+        - role: write
+          db: config
