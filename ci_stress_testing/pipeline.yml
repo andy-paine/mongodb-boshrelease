@@ -16,6 +16,12 @@ resources:
   source:
     name: bosh-warden-boshlite-ubuntu-xenial-go_agent
 
+- name: old_xenial_stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-warden-boshlite-ubuntu-xenial-go_agent
+    version_family: 651.50
+
 - name: hourly_trigger
   type: time
   source:
@@ -34,9 +40,10 @@ jobs:
     trigger: true
   - get: mongodb_release
   - get: xenial_stemcell
+  - get: old_xenial_stemcell
   - get: this_repo
     trigger: true
   - task: run_tests
     file: this_repo/ci_stress_testing/tasks/system_tests.yml
-    timeout: 45m
+    timeout: 55m
 
