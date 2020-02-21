@@ -88,6 +88,27 @@ instance_groups:
   release: mongodb-services
   stemcell: ubuntu
   vm_type: default
+
+- name: acceptance_tests
+  lifecycle: errand
+  azs: [z1]
+  instances: 1
+  vm_type: default
+  stemcell: ubuntu
+  networks:
+  - name: default
+  jobs:
+  - name: mongodb-acceptance-tests
+    consumes:
+      config-server:
+        from: mdbconf-shared-server
+      routing-service:
+        from: mongos-shared-router
+      shard-server:
+        from: mdb-shared
+    release: mongodb-services
+    properties:
+      mongo_test_suite: [ readwrite, replicaset ]
 name: mongodb
 releases:
 - name: mongodb-services
