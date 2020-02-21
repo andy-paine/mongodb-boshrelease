@@ -1,0 +1,12 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: bosh/main-bosh-docker
+inputs:
+- name: storm_bosh_release
+- name: xenial_stemcell
+
+run:
+  path: mongodb_release/ci_stress_testing/tasks/system_test.sh
