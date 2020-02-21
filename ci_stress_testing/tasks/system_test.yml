@@ -6,6 +6,7 @@ image_resource:
     repository: bosh/main-bosh-docker
 inputs:
 - name: this_repo
+- name: mongodb_release
 - name: xenial_stemcell
 
 run:
