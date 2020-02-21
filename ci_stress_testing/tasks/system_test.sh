@@ -24,3 +24,7 @@ bosh run-errand acceptance_tests
 # Restart processes on instances and run acceptance test errand
 bosh restart
 bosh run-errand acceptance_tests
+
+bosh upload-stemcell old_xenial_stemcell/*.tgz
+bosh deploy this_repo/ci_stress_testing/files/manifest.yml -o this_repo/ci_stress_testing/files/use_old_stemcell.yml
+bosh run-errand acceptance_tests
