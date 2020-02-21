@@ -24,7 +24,7 @@ instance_groups:
       root_username: admin
       server_certificate:
         certificate: ((mongo_ca.certificate))
-        private_key: ((mongo_ca.private_key)
+        private_key: ((mongo_ca.private_key))
     provides:
       config-server:
         as: mdbconf-shared-server
