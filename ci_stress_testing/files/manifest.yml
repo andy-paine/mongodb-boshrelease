@@ -32,10 +32,9 @@ instance_groups:
   name: mdbconf-shared
   networks:
   - name: default
-  persistent_disk_type: 50GB
   release: mongodb-services
   stemcell: ubuntu
-  vm_type: large
+  vm_type: default
 - azs:
   - z1
   - z2
@@ -57,9 +56,8 @@ instance_groups:
   name: mongos-shared
   networks:
   - name: default
-  persistent_disk_type: 5GB
   stemcell: ubuntu
-  vm_type: medium
+  vm_type: default
 - azs:
   - z1
   - z2
@@ -87,11 +85,10 @@ instance_groups:
   name: mdb-shared
   networks:
   - name: default
-  persistent_disk_type: 50GB
   release: mongodb-services
   stemcell: ubuntu
-  vm_type: large
-name: alcatraz-dev1-mdb-shared
+  vm_type: default
+name: mongodb
 releases:
 - name: mongodb-services
   version: latest
