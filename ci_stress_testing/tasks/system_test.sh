@@ -13,7 +13,14 @@ source /tmp/local-bosh/director/env
 bosh upload-stemcell xenial_stemcell/*.tgz
 bosh upload-release mongodb_release/*.tgz
 
-bosh -d mongodb deploy this_repo/ci_stress_testing/files/manifest.yml
-
-# Submit example-topology via a Bosh errand
+# Deploy and run acceptance test errand
+bosh deploy this_repo/ci_stress_testing/files/manifest.yml
 bosh run-errand acceptance_tests
+
+# Recreate all vms in the deployment and run acceptance test errand
+bosh recreate
+bosh run-errand acceptance_tests
+
+# Restart processes on instances and run acceptance test errand
+bosh restart
+bosh run-errand accepntance_tests
