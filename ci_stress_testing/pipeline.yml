@@ -37,6 +37,6 @@ jobs:
   - get: this_repo
     trigger: true
   - task: run_tests
-    file: mongodb_release/ci_stress_testing/tasks/system_tests.sh
+    file: this_repo/ci_stress_testing/tasks/system_tests.yml
     timeout: 45m
 
