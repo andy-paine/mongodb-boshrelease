@@ -11,7 +11,7 @@ start-bosh \
 source /tmp/local-bosh/director/env
 
 bosh upload-stemcell xenial_stemcell/*.tgz
-bosh upload-release mongodb/mongodb*.tgz
+bosh upload-release mongodb_release/mongodb*.tgz
 
 bosh -d mongodb deploy mongodb_release/ci_stress_testing/files/manifest.yml
 
