@@ -15,8 +15,5 @@ bosh upload-release mongodb_release/*.tgz
 
 bosh -d mongodb deploy this_repo/ci_stress_testing/files/manifest.yml
 
-bosh deploy this_repo/ci_stress_testing/files/manifest.yml \
-  --vars-store=/tmp/mongodb_vars.yml \
-
 # Submit example-topology via a Bosh errand
-bosh run-errand acceptance-tests
+bosh run-errand acceptance_tests
