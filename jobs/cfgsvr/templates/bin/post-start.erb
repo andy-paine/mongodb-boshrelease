@@ -5,7 +5,7 @@ set -eu
   {
     _id : "#{p('replication.replica_set_name')}",
     members: [
-      { _id: "#{spec.id}", host: "#{spec.address}:#{p('port')}" },
+      { _id: #{spec.index}, host: "#{spec.address}:#{p('port')}" },
     ]
   }
   EOCONFIG
@@ -13,4 +13,4 @@ set -eu
 # Intialize replicaset if needed
 /var/vcap/jobs/cfgsvr/bin/mongo --eval 'rs.initiate(<%= rs_config %>) || quit()'
 # Add this host to replicaset if needed
-/var/vcap/jobs/cfgsvr/bin/mongo --eval 'rs.add( { host: "<%= spec.address %>:<%= p('port') %>", priority: 0, votes: 0 } ) || quit()'
+/var/vcap/jobs/cfgsvr/bin/mongo --eval 'rs.add( { host: "<%= spec.address %>:<%= p('port') %>", priority: 1, votes: 1 } ) || quit()'
