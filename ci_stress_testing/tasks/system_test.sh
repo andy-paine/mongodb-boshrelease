@@ -23,4 +23,4 @@ bosh run-errand acceptance_tests
 
 # Restart processes on instances and run acceptance test errand
 bosh restart
-bosh run-errand accepntance_tests
+bosh run-errand acceptance_tests
