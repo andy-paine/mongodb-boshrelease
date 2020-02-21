@@ -3,7 +3,7 @@
   value:
     alias: old_xenial
     os: ubuntu-xenial
-    version: 621.50
+    version: '621.50'
 
 - type: replace
   path: /instance_groups/name=mdb-shared/stemcell

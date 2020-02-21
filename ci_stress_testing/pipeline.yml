@@ -20,7 +20,7 @@ resources:
   type: bosh-io-stemcell
   source:
     name: bosh-warden-boshlite-ubuntu-xenial-go_agent
-    version_family: 651.50
+    version_family: '621.50'
 
 - name: hourly_trigger
   type: time
