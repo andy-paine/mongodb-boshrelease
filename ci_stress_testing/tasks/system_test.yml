@@ -5,8 +5,8 @@ image_resource:
   source:
     repository: bosh/main-bosh-docker
 inputs:
-- name: storm_bosh_release
+- name: this_repo
 - name: xenial_stemcell
 
 run:
-  path: mongodb_release/ci_stress_testing/tasks/system_test.sh
+  path: this_repo/ci_stress_testing/tasks/system_test.sh
