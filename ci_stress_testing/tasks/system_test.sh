@@ -10,11 +10,13 @@ start-bosh \
   -o /usr/local/bosh-deployment/credhub.yml
 source /tmp/local-bosh/director/env
 
+# Upload releases and stemcell
 bosh upload-stemcell xenial_stemcell/*.tgz
 bosh upload-release mongodb_release/*.tgz
+bosh upload-release datadog_agent_release/*.tgz
 
 # Deploy and run acceptance test errand
-bosh deploy this_repo/ci_stress_testing/files/manifest.yml
+bosh deploy this_repo/ci_stress_testing/files/manifest.yml --ops-file this_repo/ci_stress_testing/files/datadog_addon.yml
 bosh run-errand acceptance_tests
 
 # Recreate all vms in the deployment and run acceptance test errand
