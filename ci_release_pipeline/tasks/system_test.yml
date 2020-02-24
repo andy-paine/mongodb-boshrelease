@@ -4,12 +4,13 @@ image_resource:
   type: registry-image
   source:
     repository: bosh/main-bosh-docker
+
 inputs:
-- name: this_repo
+- name: mongodb_bosh_release_git
 - name: mongodb_release
 - name: datadog_agent_release
 - name: old_xenial_stemcell
 - name: xenial_stemcell
 
 run:
-  path: this_repo/ci_stress_testing/tasks/system_test.sh
+  path: mongodb_bosh_release_git/ci_release_pipeline/tasks/system_test.sh
