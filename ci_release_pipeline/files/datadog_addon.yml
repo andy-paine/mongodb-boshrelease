@@ -20,7 +20,7 @@
         tags:
         - "product:enterprise_archive"
         - "customer:cs"
-        - "environment:stress_testing"
+        - "environment:deployment_testing"
         - "cloud:vsphere"
         - "country:USA"
         - "region:nam"
