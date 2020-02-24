@@ -2,7 +2,7 @@
 
 set -eux
 
-version="$(cat mongodb_bosh_release_version/version"
+version="$(cat mongodb_bosh_release_version/version)"
 cd mongodb_bosh_release_git
 
 bosh create-release --force \
