@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -eux
+/var/vcap/jobs/<%= p('job_name') %>/bin/mongo <<'EOCOMMAND'
+use admin
+<% for user in p('users') %>
+db.createUser({
+  user: "<%= user['name'] %>",
+  pwd: "<%= user['password'] %>",
+  roles: <%= JSON.dump user['roles'] %>
+})
+<% end %>
+quit()
+EOCOMMAND
