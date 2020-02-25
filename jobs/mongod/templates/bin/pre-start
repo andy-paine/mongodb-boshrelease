@@ -1,71 +1,13 @@
 #!/usr/bin/env bash
 set -eux
 
-export JOBS_COMMON_DIR='/var/vcap/packages/mongodb-jobs-common'
-source ${JOBS_COMMON_DIR}/bin/setenv mongod
-source ${JOBS_COMMON_DIR}/bin/mdb-functions
+LOG_DIR=/var/vcap/sys/log/mongod
+mkdir -p $LOG_DIR
+chown -R vcap:vcap $LOG_DIR
 
-if [ $(check_ssl) -eq 0 ]
-then
-  export MONGO_CMD="${JOBS_COMMON_DIR}/bin/mongo.sh"
-else
-  # Generate the certificates
-  ${JOBS_COMMON_DIR}/bin/generate_ssl_cert.sh
-  export MONGO_CMD="${JOBS_COMMON_DIR}/bin/mongo-ssl.sh"
-fi
+exec >> ${LOG_DIR}/pre-start.stdout.log
+exec 2>> ${LOG_DIR}/pre-start.stderr.log
 
-system_update            # Updating system mandatories
-rights_and_directories   # Create Mongodb directories and update rights on keyfile
-
-export MONGO_CMD_PARAM="--quiet"
-
-# check if fcv is correctly setted on previously deployed clusters
-
-if [ "$( check_master )" != "" ]
-then
-  if [ $(check_current_fcv) -ne 0 ]
-  then
-    update_fcv
-    rm -rf ${DATA_DIR}/*
-  fi
-fi
-
-if [ ! -f ${RUN_DIR}/mongodb_initialized -o $(check_password) -eq 1 ]
-then
-   start_mongod_noauth          # Start mongod without authentication
-else
-   start_mongod_with_auth
-fi
-
-if [ $(check_password) -eq 1 ]
-then
-  update_password
-fi  
-
-if [ ${property_replication_enable} -eq 0  ]
-then
-    # In standalone mode
-    create_admin_users    # Create the admin and root users
-else
-    # In replicaset mode  
-    run_replicaset
-fi
-
-[ ! -f ${RUN_DIR}/mongodb_initialized ] && touch ${RUN_DIR}/mongodb_initialized
-
-# backup root password to allowpassword modification through manifest or credhub
-backup_root_password
-
-#update fcv to deployed version
-if [ $(check_current_fcv) -ne 0 ]
-then
-  update_fcv
-  rm -rf ${DATA_DIR}/*
-fi
-
-kill_and_wait ${PIDFILE}
-
-# linking certificates to common directory
-ln -sf /var/vcap/jobs/mongod/ssl /var/vcap/data/ssl
-
-exit 0
+mkdir -p /var/vcap/store/mongod/data
+chown -R vcap:vcap /var/vcap/store/mongod
+/var/vcap/jobs/mongod/bin/generate_ssl_cert

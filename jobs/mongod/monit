@@ -1,5 +1,5 @@
 check process mongodb_server
-  with pidfile /var/vcap/sys/run/mongod/mongod.pid
-  start program "/var/vcap/jobs/mongod/bin/mongod_ctl start"
-  stop program "/var/vcap/jobs/mongod/bin/mongod_ctl stop"
+  with pidfile /var/vcap/sys/run/bpm/mongod/mongod.pid
+  start program "/var/vcap/jobs/bpm/bin/bpm start mongod"
+  stop program "/var/vcap/jobs/bpm/bin/bpm stop mongod"
   group vcap
