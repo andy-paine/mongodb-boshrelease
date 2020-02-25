@@ -1,0 +1,135 @@
+anchors:
+  smarsh_releases_bucket: &smarsh_releases_bucket
+    bucket: smarsh-bosh-releases
+    access_key_id: ((smarsh_bosh_releases_bucket_access_key_id))
+    secret_access_key: ((smarsh_bosh_releases_bucket_secret_access_key))
+  smarsh_bucket_source: &smarsh_bucket_source
+      bucket: smarsh-alcatraz-release-artifacts
+      access_key_id: ((smarsh_aws_access_key_id))
+      secret_access_key: ((smarsh_aws_secret_access_key))
+
+resources:
+# Docker images
+- name: pcf-ops
+  type: docker-image
+  source:
+    repository: engineerbetter/pcf-ops
+    tag: latest
+
+# Git
+- name: mongodb_bosh_release_git
+  type: git
+  source:
+    ignore_paths:
+    - releases
+    - .final_builds
+    - README.md
+    branch: stress_testing
+    uri: https://github.com/Smarsh/mongodb-boshrelease.git
+
+- name: mongodb_bosh_release_version
+  type: semver
+  source:
+    driver: git
+    branch: version
+    file: version
+    uri: git@github.com:Smarsh/mongodb-boshrelease.git
+    private_key: ((mongodb_bosh_release_deploy_key))
+
+# S3
+- name: mongodb_release
+  type: s3
+  source:
+    << : *smarsh_releases_bucket
+    regexp: mongodb/mongodb(.*).tgz
+
+- name: mongodb_bosh_candidate_release_s3
+  type: s3
+  source:
+    << : *smarsh_releases_bucket
+    regexp: mongodb/candidates/mongodb-(.*).tgz
+
+- name: mongodb_bosh_release_s3
+  type: s3
+  source:
+    << : *smarsh_releases_bucket
+    regexp: mongodb/mongodb-(.*).tgz
+
+# Stemcells
+- name: old_xenial_stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-warden-boshlite-ubuntu-xenial-go_agent
+    version_family: '621.50'
+
+- name: xenial_stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-warden-boshlite-ubuntu-xenial-go_agent
+
+jobs:
+- name: create_candidate_release
+  serial: true
+  plan:
+  - get: mongodb_bosh_release_version
+    params:
+      bump: patch
+      pre: rc
+  - get: mongodb_bosh_release_git
+    trigger: true
+  - task: create_release
+    file: mongodb_bosh_release_git/ci_release_pipeline/tasks/create_release.yml
+  - put: mongodb_bosh_candidate_release_s3
+    params:
+      file: release_tarball/mongodb-*.tgz
+  - put: mongodb_bosh_release_version
+    params:
+      file: mongodb_bosh_release_version/version
+
+- name: system_test_candidate_release
+  serial: true
+  serial_groups:
+  - mongodb_release
+  plan:
+  - get: mongodb_bosh_candidate_release_s3
+    passed:
+    - create_candidate_release
+  - get: mongodb_bosh_release_git
+    trigger: true
+    passed:
+    - create_candidate_release
+  - get: mongodb_bosh_release_version
+    passed:
+    - create_candidate_release
+  - get: mongodb_release
+  - get: xenial_stemcell
+  - get: old_xenial_stemcell
+  - task: system_tests
+    file: mongodb_bosh_release_git/ci_release_pipeline/tasks/system_test.yml
+    privileged: true
+    timeout: 75m
+
+- name: create_final_release
+  serial: true
+  serial_groups:
+  - mongodb_release
+  plan:
+  - get: pcf-ops
+  - get: mongodb_bosh_candidate_release_s3
+    trigger: true
+    passed:
+    - system_test_candidate_release
+  - get: mongodb_bosh_release_git
+    passed:
+    - system_test_candidate_release
+  - get: mongodb_bosh_release_version
+    passed:
+    - system_test_candidate_release
+    params:
+      bump: final
+  - put: mongodb_bosh_release_s3
+    params:
+      file: release_tarball/mongodb-*.tgz
+  - put: mongodb_bosh_release_version
+    params:
+      file: mongodb_bosh_release_version/version
