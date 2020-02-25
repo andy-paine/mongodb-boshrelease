@@ -25,7 +25,7 @@ templates:
   bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   bin/pre-start: bin/pre-start
   bin/post-start.erb: bin/post-start
-  bin/drain: bin/drain
+  bin/drain.erb: bin/drain
   bin/mongo.erb : bin/mongo
   bin/mongos.erb : bin/mongos
   config/bpm.yml.erb: config/bpm.yml

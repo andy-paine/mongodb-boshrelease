@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+echo "current_state : ${BOSH_JOB_STATE} next_state:${BOSH_JOB_NEXT_STATE}"
+
+if echo "${BOSH_JOB_NEXT_STATE}" | grep '"persistent_disk":0'
+then
+	echo "$(date +%F_%T): detected 'scale-in' condition, decommissioning current node"
+
+    # In standalone mode node is simply removed
+	# otherwise
+    <% if p('replication.enable') %>
+    echo "TODO: Add scale in for rs"
+    <% end %>
+fi
