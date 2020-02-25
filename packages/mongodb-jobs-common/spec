@@ -1,5 +1,0 @@
----
-name: mongodb-jobs-common
-dependencies: []
-files:
--  mongodb-jobs-common/**/*
