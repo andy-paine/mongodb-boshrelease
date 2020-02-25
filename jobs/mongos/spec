@@ -2,7 +2,6 @@
 name: mongos
 packages:
   - mongodb
-  - mongodb-jobs-common
 
 consumes:
   - name: routing-service
