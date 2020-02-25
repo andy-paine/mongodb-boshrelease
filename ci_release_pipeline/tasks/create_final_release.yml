@@ -1,0 +1,18 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: engineerbetter/pcf-ops
+    tag: latest
+
+inputs:
+- name: mongodb_bosh_candidate_release_s3
+- name: mongodb_bosh_release_git
+- name: mongodb_bosh_release_version
+
+outputs:
+- name: release_tarball
+
+run:
+  path: mongodb_bosh_release_git/ci_release_pipeline/tasks/create_final_release.sh

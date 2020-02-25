@@ -127,6 +127,9 @@ jobs:
     - system_test_candidate_release
     params:
       bump: final
+  - task: create_final_release
+    file: mongodb_bosh_release_git/ci_release_pipeline/tasks/create_final_release.yml
+    privileged: true
   - put: mongodb_bosh_release_s3
     params:
       file: release_tarball/mongodb-*.tgz
