@@ -22,11 +22,11 @@ provides:
     - enable_role_based_access_control
 
 templates:
-  bin/pre-start: bin/pre-start
   bin/post-start.erb: bin/post-start
   bin/drain.erb: bin/drain
   bin/mongos.erb : bin/mongos
   config/mongodb.conf.erb: config/mongodb.conf
+  shared/bin/pre-start.erb: bin/pre-start
   shared/bin/mongo.erb : bin/mongo
   shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   shared/bin/create_users.sh.erb: bin/create_users

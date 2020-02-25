@@ -22,10 +22,10 @@ provides:
     - server_certificate.certificate
 
 templates:
-  bin/pre-start: bin/pre-start
   bin/post-start.erb: bin/post-start
   bin/drain.erb: bin/drain
   config/mongodb.conf.erb: config/mongodb.conf
+  shared/bin/pre-start.erb: bin/pre-start
   shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   shared/bin/create_users.sh.erb: bin/create_users
   shared/bin/mongo.erb: bin/mongo
