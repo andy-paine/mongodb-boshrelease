@@ -25,14 +25,14 @@ provides:
     - enable_role_based_access_control
 
 templates:
-  bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   bin/pre-start: bin/pre-start
   bin/post-start.erb: bin/post-start
-  bin/mongo.erb : bin/mongo
-  config/bpm.yml.erb: config/bpm.yml
   config/mongodb.conf.erb: config/mongodb.conf
-  ssl/CA.key.erb: ssl/CA.key
-  ssl/CA.crt.erb: ssl/CA.crt
+  shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
+  shared/bin/mongo.erb : bin/mongo
+  shared/config/bpm.yml.erb: config/bpm.yml
+  shared/ssl/CA.key.erb: ssl/CA.key
+  shared/ssl/CA.crt.erb: ssl/CA.crt
 
 properties:
   port:
@@ -178,3 +178,11 @@ properties:
 
         This option overrides any value set to 'mongodb.mmap_v1_small_files' and
         'mongodb.replication.operation_log_max_size_mb'.
+
+  # Do not change
+  job_name:
+    default: cfgsvr
+    description: Used for shared templates. Do not change or override.
+  self_link_name:
+    default: config-server
+    description: Used for shared templates. Do not change or override.
