@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-/var/vcap/packages/mongodb/bin/mongo \
-  --host <%= link('shard-server').instances.map{|i| "#{i.address}:#{p('port')}"}.join(',') %> \
-  --ssl --sslPEMKeyFile /var/vcap/jobs/shardsvr/ssl/mongodb.pem \
-  --sslCAFile /var/vcap/jobs/shardsvr/ssl/CA.crt \
-  --authenticationDatabase '$external' \
-  --authenticationMechanism MONGODB-X509 "$@"

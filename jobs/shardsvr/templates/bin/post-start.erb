@@ -16,14 +16,4 @@ set -eu
 /var/vcap/jobs/shardsvr/bin/mongo --eval 'rs.add( { host: "<%= spec.address %>:<%= p('port') %>", priority: 1, votes: 1 } ) || quit()'
 /var/vcap/jobs/shardsvr/bin/mongos --eval 'sh.addShard("<%= p('replication.replica_set_name') %>/<%= spec.address %>:<%= p('port') %>")'
 
-<% for user in p('users') %>
-/var/vcap/jobs/shardsvr/bin/mongo <<'EOCOMMAND'
-use admin
-db.createUser({
-  user: "<%= user['name'] %>",
-  pwd: "<%= user['password'] %>",
-  roles: <%= JSON.dump user['roles'] %>
-})
-quit()
-EOCOMMAND
-<% end %>
+/var/vcap/jobs/shardsvr/bin/create_users
