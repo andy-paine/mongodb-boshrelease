@@ -8,7 +8,6 @@ image_resource:
 inputs:
 - name: mongodb_bosh_release_git
 - name: mongodb_release
-- name: datadog_agent_release
 - name: old_xenial_stemcell
 - name: xenial_stemcell
 
