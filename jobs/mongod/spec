@@ -2,7 +2,6 @@
 name: mongod
 packages:
   - mongodb
-  - mongodb-jobs-common
 
 consumes:
   - name: server
@@ -23,14 +22,17 @@ provides:
     - server_certificate.certificate
 
 templates:
-  bin/mdb-variables.sh.erb: bin/mdb-variables.sh
   bin/pre-start: bin/pre-start
-  bin/drain: bin/drain
-  bin/mongod_ctl : bin/mongod_ctl
-  config/mongod.conf.erb: config/mongod.conf
-  config/keyfile.erb: config/keyfile
-  ssl/CA.key.erb: ssl/CA.key
-  ssl/CA.crt.erb: ssl/CA.crt
+  bin/post-start.erb: bin/post-start
+  bin/drain.erb: bin/drain
+  config/mongodb.conf.erb: config/mongodb.conf
+  shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
+  shared/bin/create_users.sh.erb: bin/create_users
+  shared/bin/mongo.erb: bin/mongo
+  shared/config/bpm.yml.erb: config/bpm.yml
+  shared/config/keyfile.erb: config/keyfile
+  shared/ssl/CA.key.erb: ssl/CA.key
+  shared/ssl/CA.crt.erb: ssl/CA.crt
 
 properties:
   port:
@@ -131,26 +133,23 @@ properties:
         only. Never disable this option in production.
 
         Ref: https://docs.mongodb.com/manual/reference/configuration-options/#security.authorization
-  admin_username:
-      default: admin
-      description: |
-        Username of the default admin user.
-  admin_password:
-      description: |
-        Password for the admin user, in clear text.
-  root_username:
-      default: root
-      description: |
-        Username of the default root user.
-  root_password:
-      description: |
-        Password for the root user, in clear text.
+  users:
+    default: []
+    description: Users to create in this replicaset
+    example: |
+      - name: admin
+        password: foo
+        roles:
+        - role: read
+          db: admin
+        - role: write
+          db: config
   server_certificate.ca:
       default: "NOT INITIALIZED"
       description: Mongodb certificate for ttl/ssl auth - CA part
-  server_certificate.private_key: 
+  server_certificate.private_key:
       default: "NOT INITIALIZED"
-  server_certificate.certificate: 
+  server_certificate.certificate:
       default: "NOT INITIALIZED"
   require_ssl:
       default: 1
@@ -176,3 +175,20 @@ properties:
 
         This option overrides any value set to 'mongodb.mmap_v1_small_files' and
         'mongodb.replication.operation_log_max_size_mb'.
+
+  # Backwards compat for link in acceptance-tests
+  root_username:
+      default: root
+      description: |
+        Username of the default root user.
+  root_password:
+      description: |
+        Password for the root user, in clear text.
+
+  # Do not change
+  job_name:
+    default: mongod
+    description: Used for shared templates. Do not change or override.
+  self_link_name:
+    default: server
+    description: Used for shared templates. Do not change or override.
