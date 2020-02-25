@@ -1,8 +1,0 @@
-processes:
-  - name: mongos
-    executable: /var/vcap/packages/mongodb/bin/mongos
-    persistent_disk: true
-    ephemeral_disk: true
-    args:
-    - --config
-    - /var/vcap/jobs/mongos/config/mongodb.conf

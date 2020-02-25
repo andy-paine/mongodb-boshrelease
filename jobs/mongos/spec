@@ -18,15 +18,15 @@ provides:
     - port
 
 templates:
-  bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   bin/pre-start: bin/pre-start
-  bin/post-start.erb: bin/post-start
-  bin/mongo.erb: bin/mongo
-  config/bpm.yml.erb: config/bpm.yml
   config/mongodb.conf.erb: config/mongodb.conf
-  config/keyfile.erb: config/keyfile
-  ssl/CA.key.erb: ssl/CA.key
-  ssl/CA.crt.erb: ssl/CA.crt
+  shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
+  shared/bin/create_users.sh.erb: bin/post-start
+  shared/bin/mongo.erb: bin/mongo
+  shared/config/bpm.yml.erb: config/bpm.yml
+  shared/config/keyfile.erb: config/keyfile
+  shared/ssl/CA.key.erb: ssl/CA.key
+  shared/ssl/CA.crt.erb: ssl/CA.crt
 
 properties:
   port:
@@ -46,3 +46,11 @@ properties:
           db: admin
         - role: write
           db: config
+
+  # Do not change
+  job_name:
+    default: mongos
+    description: Used for shared templates. Do not change or override.
+  self_link_name:
+    default: routing-server
+    description: Used for shared templates. Do not change or override.
