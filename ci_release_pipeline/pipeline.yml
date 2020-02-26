@@ -1,10 +1,11 @@
 anchors:
-  bucket_credentials: &bucket_credentials
-    access_key_id: ((smarsh_bosh_releases_bucket_access_key_id))
-    secret_access_key: ((smarsh_bosh_releases_bucket_secret_access_key))
+  blobstore_credentials: &blobstore_credentials
+    AWS_ACCESS_KEY_ID: ((smarsh_bosh_releases_bucket_access_key_id))
+    AWS_SECRET_ACCESS_KEY: ((smarsh_bosh_releases_bucket_secret_access_key))
   smarsh_releases_bucket: &smarsh_releases_bucket
     bucket: smarsh-bosh-releases
-    <<: *bucket_credentials
+    access_key_id: ((smarsh_bosh_releases_bucket_access_key_id))
+    secret_access_key: ((smarsh_bosh_releases_bucket_secret_access_key))
 
 resources:
 # Docker images
@@ -72,7 +73,7 @@ jobs:
   - task: create_release
     file: mongodb_bosh_release_git/ci_release_pipeline/tasks/create_release.yml
     params:
-      <<: *bucket_credentials
+      <<: *blobstore_credentials
   - put: mongodb_bosh_candidate_release_s3
     params:
       file: release_tarball/mongodb-*.tgz
