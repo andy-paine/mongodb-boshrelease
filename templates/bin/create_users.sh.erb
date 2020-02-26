@@ -2,12 +2,17 @@
 set -eu
 /var/vcap/jobs/<%= p('job_name') %>/bin/mongo <<'EOCOMMAND'
 use admin
-<% for user in p('users') %>
-db.createUser({
-  user: "<%= user['name'] %>",
-  pwd: "<%= user['password'] %>",
-  roles: <%= JSON.dump user['roles'] %>
-})
-<% end %>
-quit()
+if (db.isMaster().ismaster) {
+  <% for user in p('users') %>
+  if (!db.getUsers().map(x => x.user).includes(<%= user['name'] %>)) {
+    db.createUser({
+      user: "<%= user['name'] %>",
+      pwd: "<%= user['password'] %>",
+      roles: <%= JSON.dump user['roles'] %>
+    })
+  } else {
+    db.changeUserPassword("<%= user['name'] %>", "<%= user['password'] %>")
+  }
+  <% end %>
+}
 EOCOMMAND
