@@ -1,19 +1,5 @@
 #!/usr/bin/env bash
 set -eu
-<%-
-  rs_config = <<-EOCONFIG
-  {
-    _id : "#{p('replication.replica_set_name')}",
-    members: [
-      { _id: #{spec.index}, host: "#{spec.address}:#{p('port')}" },
-    ]
-  }
-  EOCONFIG
-%>
-# Intialize replicaset if needed
-/var/vcap/jobs/shardsvr/bin/mongo --eval 'rs.initiate(<%= rs_config %>) || quit()'
-# Add this host to replicaset if needed
-/var/vcap/jobs/shardsvr/bin/mongo --eval 'rs.add( { host: "<%= spec.address %>:<%= p('port') %>", priority: 1, votes: 1 } ) || quit()'
-/var/vcap/jobs/shardsvr/bin/mongos --eval 'sh.addShard("<%= p('replication.replica_set_name') %>/<%= spec.address %>:<%= p('port') %>")'
 
+/var/vcap/jobs/shardsvr/bin/add_to_replicaset
 /var/vcap/jobs/shardsvr/bin/create_users

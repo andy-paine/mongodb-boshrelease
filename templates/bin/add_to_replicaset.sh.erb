@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -eu
+<%- address = "#{spec.address}:#{p('port')}" %>
+<%- if spec.bootstrap %>
+<%-
+  rs_config = <<-EOCONFIG
+  {
+    _id : "#{p('replication.replica_set_name')}",
+    members: [
+      { _id: #{spec.index}, host: "#{address}" },
+    ]
+  }
+  EOCONFIG
+%>
+/var/vcap/jobs/<%= p('job_name') %>/bin/mongo --eval 'if (!rs.status().ok) { rs.initiate(<%= rs_config %>) }'
+<% end %>
+
+/var/vcap/jobs/<%= p('job_name') %>/bin/mongo <<EOCOMMAND
+if (!rs.status().members.map(x => x.name).includes("<%= address %>")) {
+  rs.add({ host: "<%= address %>" })
+} else {
+  print("<%= address %> is already added to replicaset")
+}
+EOCOMMAND

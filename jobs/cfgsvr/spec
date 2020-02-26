@@ -25,9 +25,9 @@ provides:
     - enable_role_based_access_control
 
 templates:
-  bin/post-start.erb: bin/post-start
   config/mongodb.conf.erb: config/mongodb.conf
   shared/bin/pre-start.erb: bin/pre-start
+  shared/bin/add_to_replicaset.sh.erb: bin/post-start
   shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   shared/bin/mongo.erb : bin/mongo
   shared/config/bpm.yml.erb: config/bpm.yml

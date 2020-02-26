@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -eux
+
+LOG_DIR=/var/vcap/sys/log/<%= p('job_name') %>
+mkdir -p $LOG_DIR
+chown -R vcap:vcap $LOG_DIR
+
+exec >> ${LOG_DIR}/pre-start.stdout.log
+exec 2>> ${LOG_DIR}/pre-start.stderr.log
+
+mkdir -p /var/vcap/store/<%= p('job_name') %>/data
+chown -R vcap:vcap /var/vcap/store/<%= p('job_name') %>
+/var/vcap/jobs/<%= p('job_name') %>/bin/generate_ssl_cert
