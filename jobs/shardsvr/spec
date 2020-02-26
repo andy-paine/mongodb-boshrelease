@@ -23,10 +23,10 @@ provides:
 
 templates:
   bin/post-start.erb: bin/post-start
-  bin/drain.erb: bin/drain
   bin/mongos.erb : bin/mongos
   config/mongodb.conf.erb: config/mongodb.conf
   shared/bin/pre-start.erb: bin/pre-start
+  shared/bin/drain.erb: bin/drain
   shared/bin/mongo.erb : bin/mongo
   shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   shared/bin/add_to_replicaset.sh.erb: bin/add_to_replicaset
