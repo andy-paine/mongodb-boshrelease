@@ -1,118 +1,84 @@
 name: mongodb-services
 version: "1"
-commit_hash: 5e019e2
-uncommitted_changes: false
+commit_hash: 4514e2f
+uncommitted_changes: true
 jobs:
 - name: broker
-  version: 5e3dce23eef7112acbd9d6decaf84980b6fde742
-  fingerprint: 5e3dce23eef7112acbd9d6decaf84980b6fde742
-  sha1: 98e8e74d5de00f45fb773e828221cfcd31858b50
+  version: 7d4433d3faeab52ac17b669f291ae905c25d577b
+  fingerprint: 7d4433d3faeab52ac17b669f291ae905c25d577b
+  sha1: 42d7f84af51411f5ae33663f5d0e23228572e3eb
 - name: broker-smoke-tests
-  version: 43ffec53d47f4e80580a6266f6938b9023dc6b42
-  fingerprint: 43ffec53d47f4e80580a6266f6938b9023dc6b42
-  sha1: 2b4a7341b57ec8fb845b593e441803633c052247
+  version: da827c846d6180f70163e74d7feceb4104db16b5
+  fingerprint: da827c846d6180f70163e74d7feceb4104db16b5
+  sha1: e13e7c82c84104ff229eb84426f76511ae5d7201
+- name: cfgsvr
+  version: e4c8ee24aca434c44258e239f85508423a0d40dd
+  fingerprint: e4c8ee24aca434c44258e239f85508423a0d40dd
+  sha1: 00850e76930be0a6285ce5a1922ca1815f256878
 - name: mongod
-  version: 1320f532ca2ca9c6fa97d92087da6523babfa27d
-  fingerprint: 1320f532ca2ca9c6fa97d92087da6523babfa27d
-  sha1: 4f87e863f90c1ae4eb4e7547de0b168f8fa18b5c
+  version: ff2dd9fb34db74e7e85ca7662959ff60f141f9b7
+  fingerprint: ff2dd9fb34db74e7e85ca7662959ff60f141f9b7
+  sha1: 46e7a2dcc0e450b2a62ee657b0b320536b8904d2
+- name: mongodb-acceptance-tests
+  version: eef4b327c6fa5da5aae4e1d0184c6e1898d4a474
+  fingerprint: eef4b327c6fa5da5aae4e1d0184c6e1898d4a474
+  sha1: c3b58e4a9fb24a7cf4907d87aa16a0a080f75b7e
+- name: mongos
+  version: a138eb2e1254e397c7fcea1c8b5c73211709c73c
+  fingerprint: a138eb2e1254e397c7fcea1c8b5c73211709c73c
+  sha1: 562654269a0d7198b7b3ac76187dcd50136bd511
+- name: shardsvr
+  version: 3aa01e5b56317a81962fe427f0c914f0a7b65bd9
+  fingerprint: 3aa01e5b56317a81962fe427f0c914f0a7b65bd9
+  sha1: 85f3f415cf66560af42e281bb7b713a9fbc55f89
 packages:
-- name: binutils
-  version: 51742a5e1da14accab296b784d85fcaacf6fa2c0
-  fingerprint: 51742a5e1da14accab296b784d85fcaacf6fa2c0
-  sha1: e74e3eaf8a3fa2b1a4cfe59a006214543db4c748
-  dependencies:
-  - gcc
-  - compressors
-  - coreutils
 - name: cf-cli
   version: 9c6b035e1b3fa935eaf7d78b69250be19b3cd996
   fingerprint: 9c6b035e1b3fa935eaf7d78b69250be19b3cd996
-  sha1: 1409fde6d3ed762c088a07df33582740c6e032ba
+  sha1: 9d214561894474165a6ce2cd2aa7e6450e346417
   dependencies: []
 - name: cf-mongodb-example-app
   version: 23ed05631df4729e679120722a2398fa523bba72
   fingerprint: 23ed05631df4729e679120722a2398fa523bba72
-  sha1: 7872394ded0654ba2325279d19127cc47e5eb035
+  sha1: 3ec890d485c296e8d5841765fa6f618bd5fe151d
   dependencies: []
-- name: cmake
-  version: 1d045df86fcb4b4eafc3e0c8a70428ac3830deb7
-  fingerprint: 1d045df86fcb4b4eafc3e0c8a70428ac3830deb7
-  sha1: 77bd6e37300246d84b3576e490630725c24d59cf
-  dependencies:
-  - gcc
-- name: compressors
-  version: 0587333588e0186e611ff0cc215a4b86dbd5f490
-  fingerprint: 0587333588e0186e611ff0cc215a4b86dbd5f490
-  sha1: 9dc9979d3eb4a79fe8de4821a61e1a247d2fedbd
-  dependencies:
-  - gcc
-  - cmake
-- name: coreutils
-  version: f9b92b2c3d30502874ca936b99c4b58a8d3a6aad
-  fingerprint: f9b92b2c3d30502874ca936b99c4b58a8d3a6aad
-  sha1: 3eaf1c7a04f59d9b7878c9fad3ba075d6fcee67e
-  dependencies:
-  - gcc
-- name: gcc
-  version: d923984b221276f05551e0c20df5d11415f6ddd9
-  fingerprint: d923984b221276f05551e0c20df5d11415f6ddd9
-  sha1: c78d29e7ea6b0987f18ada40914e51a741ab5c68
-  dependencies: []
-- name: golang-1.8-linux
-  version: 1509998fbf5c66cb8fc361a479beafb41ef8cc14
-  fingerprint: 1509998fbf5c66cb8fc361a479beafb41ef8cc14
-  sha1: 3d8d63ef92977b3e4ec1ac71a555e7374078fb80
+- name: golang-1.9-linux
+  version: 39df05b363c89f1abccf002e7b3a7e996bfdacfd
+  fingerprint: 39df05b363c89f1abccf002e7b3a7e996bfdacfd
+  sha1: 438ddb99d4336c55ce9e74e130e398e5a3e4962f
   dependencies: []
 - name: java-common
   version: 018744938b5a691527c626963211f4ba4b5772bf
   fingerprint: 018744938b5a691527c626963211f4ba4b5772bf
-  sha1: e1ffcf4cc84c7157267f435bcc074c0a94077f6a
+  sha1: cea456a38a23f6fee64f922027c48f46061a9d0f
   dependencies: []
 - name: mongodb
-  version: dba769d102964f77239437acde4ad4cf81882090
-  fingerprint: dba769d102964f77239437acde4ad4cf81882090
-  sha1: 19e32dd81f4a1ddbf2a8fccbc8715204ba4c20de
+  version: 56b0fa43156523a6e827474b7eb8f8c00c1e2566
+  fingerprint: 56b0fa43156523a6e827474b7eb8f8c00c1e2566
+  sha1: 13546dd5d08a49bca7c8a835608229221ff675f1
+  dependencies: []
+- name: mongodb-acceptance-tests
+  version: e720977d99c2e66184aba20edb32cc21cf5f0891
+  fingerprint: e720977d99c2e66184aba20edb32cc21cf5f0891
+  sha1: 597b4613895776a2814daff04ed766643651088e
   dependencies:
-  - python
-  - scons
-  - golang-1.8-linux
-  - gcc
-  - compressors
-  - openssl
-  - binutils
-  - coreutils
-  - cmake
+  - golang-1.9-linux
 - name: mongodb-broker-pkg
-  version: 789a55d3614aa6dd7be0963fd046a657f688b98e
-  fingerprint: 789a55d3614aa6dd7be0963fd046a657f688b98e
-  sha1: 13016b63261ad80458b24c05235684ab064a38b4
+  version: c9b4a0c63b3065b3725060c3e8832882584a74d5
+  fingerprint: c9b4a0c63b3065b3725060c3e8832882584a74d5
+  sha1: 8871ae8c809a9c75517d0f0ca1dd72b9aba83242
+  dependencies: []
+- name: mongodb-jobs-common
+  version: f6b932f1782d8a477266ec7ac0a7731ca027ef5e
+  fingerprint: f6b932f1782d8a477266ec7ac0a7731ca027ef5e
+  sha1: e1952188e01cd519fa1070fec1de351473f09f74
   dependencies: []
 - name: openjdk
   version: 93c072891062f43e6a7fad1f3232064da90429af
   fingerprint: 93c072891062f43e6a7fad1f3232064da90429af
-  sha1: da84dcdeb730e0759b4debd28ab4c1dcecfa536f
+  sha1: 59bcb179d76bd687e62203110c916bcdcaded8a8
   dependencies: []
-- name: openssl
-  version: 0bc2fdede863330b9b37cbe7b35bb903791fa193
-  fingerprint: 0bc2fdede863330b9b37cbe7b35bb903791fa193
-  sha1: 4d39a07cad90576d344b36511efa094ac329a6c6
-  dependencies:
-  - gcc
-  - binutils
-- name: python
-  version: 3e47bd2a11ec35578c0d55dd76f907249ee8aabf
-  fingerprint: 3e47bd2a11ec35578c0d55dd76f907249ee8aabf
-  sha1: 499745353dfa3a4571c210eb538967cc5d323db4
-  dependencies:
-  - gcc
-- name: scons
-  version: bafafe302325c7ba2c923dc4335a52df166fb8fc
-  fingerprint: bafafe302325c7ba2c923dc4335a52df166fb8fc
-  sha1: 73786bc44b901b592edde9749bc7527594ed0741
-  dependencies:
-  - python
-  - gcc
 license:
   version: 4d81eef78735b21bdf9a0bb2951e2dced57524da
   fingerprint: 4d81eef78735b21bdf9a0bb2951e2dced57524da
-  sha1: 17a7e3a893988c36fdcef122fc17cbb80ebe245e
+  sha1: d143149d5c659d659368c05c617a79c85b98a947
