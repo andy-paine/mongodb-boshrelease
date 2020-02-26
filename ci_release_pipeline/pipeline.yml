@@ -101,7 +101,7 @@ jobs:
   - task: system_tests
     file: mongodb_bosh_release_git/ci_release_pipeline/tasks/system_test.yml
     privileged: true
-    timeout: 75m
+    timeout: 90m
 
 - name: create_final_release
   serial: true
