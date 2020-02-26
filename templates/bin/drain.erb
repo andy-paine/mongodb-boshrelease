@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# Only a single integer should be printed to stdout in BOSH drain script
+exec 3>&1
+exec 1>> /var/vcap/sys/log/<%= p('job_name') %>/drain.stdout.log
+exec 2>> /var/vcap/sys/log/<%= p('job_name') %>/drain.stderr.log
+echo "$(date +%F_%T): BOSH_JOB_STATE=${BOSH_JOB_STATE}"
+echo "$(date +%F_%T): BOSH_JOB_NEXT_STATE=${BOSH_JOB_NEXT_STATE}"
+
+<% if p('replication.enable') %>
+<%- address = "#{spec.address}:#{p('port')}" %>
+if echo "${BOSH_JOB_NEXT_STATE}" | grep '"persistent_disk":0'; then
+  echo "$(date +%F_%T): Detected 'scale-in' condition, removing node from replicaset"
+  /var/vcap/jobs/<%= p('job_name') %>/bin/mongo <<EOCOMMAND
+  if (rs.status().members.map(x => x.name).includes("<%= address %>")) {
+    rs.remove("<%= address %>")
+  } else {
+    print("<%= address %> is already removed from replicaset")
+  }
+EOCOMMAND
+fi
+<% end %>
+echo 0 >&3
