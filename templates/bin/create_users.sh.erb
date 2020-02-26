@@ -4,7 +4,7 @@ set -eu
 use admin
 if (db.isMaster().ismaster) {
   <% for user in p('users') %>
-  if (!db.getUsers().map(x => x.user).includes(<%= user['name'] %>)) {
+  if (!db.getUsers().map(x => x.user).includes("<%= user['name'] %>")) {
     db.createUser({
       user: "<%= user['name'] %>",
       pwd: "<%= user['password'] %>",
