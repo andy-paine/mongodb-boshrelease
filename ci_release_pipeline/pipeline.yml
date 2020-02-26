@@ -1,12 +1,10 @@
 anchors:
-  smarsh_releases_bucket: &smarsh_releases_bucket
-    bucket: smarsh-bosh-releases
+  bucket_credentials: &bucket_credentials
     access_key_id: ((smarsh_bosh_releases_bucket_access_key_id))
     secret_access_key: ((smarsh_bosh_releases_bucket_secret_access_key))
-  smarsh_bucket_source: &smarsh_bucket_source
-      bucket: smarsh-alcatraz-release-artifacts
-      access_key_id: ((smarsh_aws_access_key_id))
-      secret_access_key: ((smarsh_aws_secret_access_key))
+  smarsh_releases_bucket: &smarsh_releases_bucket
+    bucket: smarsh-bosh-releases
+    <<: *bucket_credentials
 
 resources:
 # Docker images
@@ -37,12 +35,6 @@ resources:
     private_key: ((mongodb_bosh_release_deploy_key))
 
 # S3
-- name: mongodb_release
-  type: s3
-  source:
-    << : *smarsh_releases_bucket
-    regexp: mongodb/mongodb(.*).tgz
-
 - name: mongodb_bosh_candidate_release_s3
   type: s3
   source:
@@ -79,6 +71,8 @@ jobs:
     trigger: true
   - task: create_release
     file: mongodb_bosh_release_git/ci_release_pipeline/tasks/create_release.yml
+    params:
+      <<: *bucket_credentials
   - put: mongodb_bosh_candidate_release_s3
     params:
       file: release_tarball/mongodb-*.tgz
@@ -101,7 +95,6 @@ jobs:
   - get: mongodb_bosh_release_version
     passed:
     - create_candidate_release
-  - get: mongodb_release
   - get: xenial_stemcell
   - get: old_xenial_stemcell
   - task: system_tests
