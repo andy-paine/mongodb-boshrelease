@@ -11,9 +11,7 @@
 .gitreview
 .idea
 .dev_builds/
-config/*
 config/dev.yml
-config/private.yml
 output
 releases/*.tgz
 src_alt
@@ -21,6 +19,5 @@ src_alt
 releases/**/*.tgz
 .DS_Store
 blobs
-config/final.yml
 deployment-vars-*
 ci/settings.yml
