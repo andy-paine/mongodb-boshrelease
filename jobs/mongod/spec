@@ -27,6 +27,7 @@ templates:
   config/mongodb.conf.erb: config/mongodb.conf
   shared/bin/pre-start.erb: bin/pre-start
   shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
+  shared/bin/add_to_replicaset.sh.erb: bin/add_to_replicaset
   shared/bin/create_users.sh.erb: bin/create_users
   shared/bin/mongo.erb: bin/mongo
   shared/config/bpm.yml.erb: config/bpm.yml
