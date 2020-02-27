@@ -23,7 +23,6 @@ templates:
   shared/bin/create_users.sh.erb: bin/post-start
   shared/bin/mongo.erb: bin/mongo
   shared/config/bpm.yml.erb: config/bpm.yml
-  shared/config/keyfile.erb: config/keyfile
   shared/ssl/CA.key.erb: ssl/CA.key
   shared/ssl/CA.crt.erb: ssl/CA.crt
 
