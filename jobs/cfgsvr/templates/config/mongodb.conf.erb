@@ -88,7 +88,6 @@ net:
   unixDomainSocket:
     enabled: true
     pathPrefix: /var/vcap/data/cfgsvr
-<%- if p("require_ssl") == 1 -%>
   ssl:
     mode: requireSSL
     PEMKeyFile: <%= Conf_PEMKeyFile %>
@@ -96,16 +95,9 @@ net:
     clusterFile: <%= Conf_PEMKeyFile %>
     allowConnectionsWithoutCertificates: true
     allowInvalidHostnames: true
-<%- end -%>
-<%- if p("enable_role_based_access_control") == 1 -%>
 security:
   authorization: enabled
-  <%- if p("require_ssl") == 1 -%>
   clusterAuthMode: x509
-  <%- else -%>
-  keyFile: /var/vcap/jobs/cfgsvr/config/keyfile
-  <%- end -%>
-<%- end -%>
 operationProfiling:
   slowOpThresholdMs: <%= p("slow_query_threshold_ms") %>
 replication:

@@ -19,7 +19,6 @@ provides:
     properties:
     - port
     - replication.replica_set_name
-    - enable_role_based_access_control
 
 templates:
   bin/post-start.erb: bin/post-start
@@ -32,7 +31,6 @@ templates:
   shared/bin/add_to_replicaset.sh.erb: bin/add_to_replicaset
   shared/bin/create_users.sh.erb: bin/create_users
   shared/config/bpm.yml.erb: config/bpm.yml
-  shared/config/keyfile.erb: config/keyfile
   shared/ssl/CA.key.erb: ssl/CA.key
   shared/ssl/CA.crt.erb: ssl/CA.crt
 
@@ -53,6 +51,13 @@ properties:
         - role: write
           db: config
 
+  server_certificate.ca:
+      default: "NOT INITIALIZED"
+      description: Mongodb certificate for ttl/ssl auth - CA part
+  server_certificate.private_key:
+      default: "NOT INITIALIZED"
+  server_certificate.certificate:
+      default: "NOT INITIALIZED"
   storage_engine:
       default: wiredTiger
       description: |
@@ -119,19 +124,6 @@ properties:
         size of the oplog.
 
         Ref: https://docs.mongodb.com/manual/reference/configuration-options/#replication.oplogSizeMB
-  enable_role_based_access_control:
-      default: 1
-      description: |
-        When set to '1', this option enables Role-Based Access Control (RBAC) to
-        govern each user’s access to database resources and operations. In such
-        case, a user can access only the database resources and actions for
-        which they have been granted privileges.
-
-        When set to any other value, all users can access any database and
-        perform any action. This is meant to be done in development environments
-        only. Never disable this option in production.
-
-        Ref: https://docs.mongodb.com/manual/reference/configuration-options/#security.authorization
   arbiter_only:
       default: no
       example: yes

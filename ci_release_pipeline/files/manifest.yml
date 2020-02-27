@@ -18,10 +18,7 @@ instance_groups:
       admin_username: smarsh
       port: 23758
       replication:
-        enable: 1
-        key: ((keyfile_content))
         replica_set_name: mongo-config-shared
-      require_ssl: 1
       root_password: rootpassword
       root_username: root
       server_certificate:
@@ -42,6 +39,9 @@ instance_groups:
   - name: mongos
     release: mongodb-services
     properties:
+      server_certificate:
+        certificate: ((mongo_ca.certificate))
+        private_key: ((mongo_ca.private_key))
       users:
       - name: root
         password: ((root_password))
@@ -69,6 +69,9 @@ instance_groups:
   - name: shardsvr
     release: mongodb-services
     properties:
+      server_certificate:
+        certificate: ((mongo_ca.certificate))
+        private_key: ((mongo_ca.private_key))
       replication:
         replica_set_name: mongo-data-shared
       users:

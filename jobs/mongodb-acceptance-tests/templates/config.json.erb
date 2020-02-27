@@ -17,12 +17,8 @@ if_link("server") do
        mongo_hosts << "#{instance.address}"
        mongo_ports << "#{mongo_port}"
    end
-   if lnk.p('replication.enable') == 1
-     mongo_replicasetname = lnk.p("replication.replica_set_name")
-   end
-   if lnk.p('require_ssl') == 1
-      ca_cert = "/var/vcap/jobs/mongodb-acceptance-tests/ssl/CA.crt"
-   end   
+   mongo_replicasetname = lnk.p("replication.replica_set_name")
+   ca_cert = "/var/vcap/jobs/mongodb-acceptance-tests/ssl/CA.crt"
 end
 
 if_link("config-server") do
@@ -32,12 +28,8 @@ if_link("config-server") do
         cfgsrv_hosts << "#{instance.address}"
         cfgsrv_ports << "#{mongo_port}"
    end
-   if lnk.p('replication.enable') == 1
-      cfgsrv_replicasetname = lnk.p("replication.replica_set_name")
-   end   
-   if lnk.p('require_ssl') == 1
-      ca_cert = "/var/vcap/jobs/mongodb-acceptance-tests/ssl/CA.crt"
-   end   
+   cfgsrv_replicasetname = lnk.p("replication.replica_set_name")
+   ca_cert = "/var/vcap/jobs/mongodb-acceptance-tests/ssl/CA.crt"
 end
 if_link("shard-server") do
    mongo_port = link("shard-server").p("port")
@@ -45,9 +37,7 @@ if_link("shard-server") do
         mongo_hosts << "#{instance.address}"
         mongo_ports << "#{mongo_port}"
    end
-   if link("config-server").p('replication.enable') == 1
-     mongo_replicasetname = link("shard-server").p("replication.replica_set_name")
-   end  
+   mongo_replicasetname = link("shard-server").p("replication.replica_set_name")
 end
 if_link("mongos") do
    mongo_port = link("mongos").p("port")
@@ -55,7 +45,7 @@ if_link("mongos") do
         mongos_hosts << "#{instance.address}"
         mongos_ports << "#{mongo_port}"
    end
-end   
+end
 -%>
 {
   "timeout_scale":                    <%= p('timeout_scale') %>,
@@ -64,8 +54,8 @@ end
   "mongo_root_username":              "<%= lnk.p('root_username') %>",
   "mongo_root_password":              "<%= lnk.p('root_password') %>",
   "mongo_replica_set_name":           "<%= mongo_replicasetname %>",
-  "mongo_replica_set_enable":         <%= lnk.p('replication.enable') %>,
-  "mongo_require_ssl":                <%= lnk.p('require_ssl') %>,
+  "mongo_replica_set_enable":         1,
+  "mongo_require_ssl":                1,
   "mongo_cert":                       "<%= ca_cert %>",
   "mongo_mongos_hosts":               <%= mongos_hosts.to_json %>,
   "mongo_mongos_ports":               <%= mongos_ports.to_json %>,

@@ -33,6 +33,13 @@ properties:
   deployment_timeout:
     default: 120
     description: The maximum time to wait for config-server availability before exiting with error
+  server_certificate.ca:
+      default: "NOT INITIALIZED"
+      description: Mongodb certificate for ttl/ssl auth - CA part
+  server_certificate.private_key:
+      default: "NOT INITIALIZED"
+  server_certificate.certificate:
+      default: "NOT INITIALIZED"
   users:
     default: []
     description: Users to create in the database
@@ -50,5 +57,5 @@ properties:
     default: mongos
     description: Used for shared templates. Do not change or override.
   self_link_name:
-    default: routing-server
+    default: routing-service
     description: Used for shared templates. Do not change or override.

@@ -16,13 +16,9 @@ provides:
     - admin_username
     - admin_password
     - port
-    - replication.key
-    - replication.enable
     - replication.replica_set_name
-    - require_ssl
     - server_certificate.private_key
     - server_certificate.certificate
-    - enable_role_based_access_control
 
 templates:
   config/mongodb.conf.erb: config/mongodb.conf
@@ -86,10 +82,6 @@ properties:
         'system.profile' collection.
 
         Ref: https://docs.mongodb.com/manual/reference/configuration-options/#operationProfiling.slowOpThresholdMs
-  replication.enable:
-      default: 1
-      description: |
-        When set to 1, this settings activates replication.
   replication.replica_set_name:
       default: cs0
       description: |
@@ -112,29 +104,6 @@ properties:
         size of the oplog.
 
         Ref: https://docs.mongodb.com/manual/reference/configuration-options/#replication.oplogSizeMB
-  replication.key:
-      description: |
-        Specify key which will be used in keyfile. Mandatory for replication
-        without ssl With keyfile authentication, each mongod instances in the
-        replica set uses the contents of the keyfile as the shared password
-        for authenticating other members in the deployment. Only mongod
-        instances with the correct keyfile can join the replica set.
-
-        The content of the keyfile must be between 6 and 1024 characters long
-        and must be the same for all members of the replica set.
-  enable_role_based_access_control:
-      default: 1
-      description: |
-        When set to '1', this option enables Role-Based Access Control (RBAC) to
-        govern each user’s access to database resources and operations. In such
-        case, a user can access only the database resources and actions for
-        which they have been granted privileges.
-
-        When set to any other value, all users can access any database and
-        perform any action. This is meant to be done in development environments
-        only. Never disable this option in production.
-
-        Ref: https://docs.mongodb.com/manual/reference/configuration-options/#security.authorization
   admin_username:
       default: MongoAdmin
       description: |
@@ -156,21 +125,6 @@ properties:
       default: "NOT INITIALIZED"
   server_certificate.certificate:
       default: "NOT INITIALIZED"
-  require_ssl:
-      default: 1
-      description: |
-        Enforce TLS/SSL for connecting to the server.
-
-        When this options is set to '1', all connections to mongod must be
-        encrypted with TLS/SSL, and un-encrypted connections will be refused.
-        For example, when using the 'mongo' client, the '--ssl' argument will be
-        mandatory.
-
-        When this options is set to '0', then all connections to mongod must not
-        be encrypted, and SSL/TLS will not be possible. For example, when using
-        the 'mongo' client, the '--ssl' argument will not be possible. This
-        should be reserved to development environments and be avoided in
-        production.
   arbiter_only:
       default: no
       example: yes
