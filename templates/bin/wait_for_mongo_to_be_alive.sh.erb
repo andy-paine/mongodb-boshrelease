@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -eu
+
+max_tries=10
+tries=1
+while [ $tries -lt $max_tries ]; do
+  echo "Trying to connect to Mongo - attempt $tries"
+  /var/vcap/jobs/<%= p('job_name') %>/bin/mongo --eval 'db.runCommand("ping").ok' && exit 0
+  sleep 5
+  tries=$((tries+1))
+done
+echo "Mongo failed to come up in time"
+exit 1

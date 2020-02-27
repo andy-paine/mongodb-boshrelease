@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eu
 
+/var/vcap/jobs/mongod/bin/wait_for_mongo_to_be_alive
 /var/vcap/jobs/mongod/bin/add_to_replicaset
 /var/vcap/jobs/mongod/bin/create_users

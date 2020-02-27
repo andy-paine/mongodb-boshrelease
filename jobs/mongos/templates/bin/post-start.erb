@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -eu
+
+/var/vcap/jobs/mongos/bin/wait_for_mongo_to_be_alive
+/var/vcap/jobs/mongos/bin/create_users

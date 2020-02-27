@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -eu
+
+/var/vcap/jobs/cfgsvr/bin/wait_for_mongo_to_be_alive
+/var/vcap/jobs/cfgsvr/bin/add_to_replicaset

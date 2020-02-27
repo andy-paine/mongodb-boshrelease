@@ -22,9 +22,11 @@ provides:
 
 templates:
   config/mongodb.conf.erb: config/mongodb.conf
+  bin/post-start.erb: bin/post-start
   shared/bin/pre-start.erb: bin/pre-start
   shared/bin/drain.erb: bin/drain
-  shared/bin/add_to_replicaset.sh.erb: bin/post-start
+  shared/bin/wait_for_mongo_to_be_alive.sh.erb: bin/wait_for_mongo_to_be_alive
+  shared/bin/add_to_replicaset.sh.erb: bin/add_to_replicaset
   shared/bin/drain.erb: bin/drain.erb
   shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   shared/bin/mongo.erb : bin/mongo
