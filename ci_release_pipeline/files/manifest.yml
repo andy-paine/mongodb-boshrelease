@@ -6,11 +6,13 @@ instance_groups:
   env:
     persistent_disk_fs: xfs
   instances: 3
+  env:
+    persistent_disk_fs: xfs
   jobs:
-  - consumes:
-      config-server:
-        from: mdbconf-shared-server
-    name: cfgsvr
+  - name: bpm
+    release: bpm
+  - name: cfgsvr
+    release: mongodb-services
     properties:
       admin_password: myP@ssword
       admin_username: smarsh
@@ -21,14 +23,10 @@ instance_groups:
         replica_set_name: mongo-config-shared
       require_ssl: 1
       root_password: rootpassword
-      root_username: admin
+      root_username: root
       server_certificate:
         certificate: ((mongo_ca.certificate))
         private_key: ((mongo_ca.private_key))
-    provides:
-      config-server:
-        as: mdbconf-shared-server
-    release: mongodb-services
   name: mdbconf-shared
   networks:
   - name: default
@@ -41,18 +39,20 @@ instance_groups:
   - z3
   instances: 1
   jobs:
-  - consumes:
-      config-server:
-        from: mdbconf-shared-server
-      routing-service:
-        from: mongos-shared-router
-    name: mongos
-    properties:
-      port: 23757
-    provides:
-      routing-service:
-        as: mongos-shared-router
+  - name: mongos
     release: mongodb-services
+    properties:
+      users:
+      - name: root
+        password: ((root_password))
+        roles:
+        - role: root
+          db: admin
+      - name: admin
+        password: ((admin_password))
+        roles:
+        - role: userAdminAnyDatabase
+          db: admin
   name: mongos-shared
   networks:
   - name: default
@@ -66,22 +66,17 @@ instance_groups:
     persistent_disk_fs: xfs
   instances: 3
   jobs:
-  - consumes:
-      config-server:
-        from: mdbconf-shared-server
-      routing-service:
-        from: mongos-shared-router
-      shard-server:
-        from: mdb-shared
-    name: shardsvr
+  - name: shardsvr
+    release: mongodb-services
     properties:
-      port: 23757
       replication:
         replica_set_name: mongo-data-shared
-    provides:
-      shard-server:
-        as: mdb-shared
-    release: mongodb-services
+      users:
+      - name: root
+        password: ((root_password))
+        roles:
+        - role: root
+          db: admin
   name: mdb-shared
   networks:
   - name: default
@@ -99,13 +94,6 @@ instance_groups:
   - name: default
   jobs:
   - name: mongodb-acceptance-tests
-    consumes:
-      config-server:
-        from: mdbconf-shared-server
-      routing-service:
-        from: mongos-shared-router
-      shard-server:
-        from: mdb-shared
     release: mongodb-services
     properties:
       mongo_test_suite: [ readwrite, replicaset ]
