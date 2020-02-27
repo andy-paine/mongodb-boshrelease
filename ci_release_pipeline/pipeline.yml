@@ -23,7 +23,7 @@ resources:
     - releases
     - .final_builds
     - README.md
-    branch: stress_testing
+    branch: bpm-rewrite
     uri: https://github.com/Smarsh/mongodb-boshrelease.git
 
 - name: mongodb_bosh_release_version
@@ -123,6 +123,8 @@ jobs:
       bump: final
   - task: create_final_release
     file: mongodb_bosh_release_git/ci_release_pipeline/tasks/create_final_release.yml
+    params:
+      <<: *blobstore_credentials
     privileged: true
   - put: mongodb_bosh_release_s3
     params:
