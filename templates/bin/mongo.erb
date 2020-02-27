@@ -2,7 +2,7 @@
 
 /var/vcap/packages/mongodb/bin/mongo \
   --host <%= link(p('self_link_name')).instances.map{|i| "#{i.address}:#{p('port')}"}.join(',') %> \
-  --ssl --sslPEMKeyFile /var/vcap/jobs/mongod/ssl/mongodb.pem \
-  --sslCAFile /var/vcap/jobs/mongod/ssl/CA.crt \
+  --ssl --sslPEMKeyFile /var/vcap/jobs/<%= p('job_name') %>/ssl/mongodb.pem \
+  --sslCAFile /var/vcap/jobs/<%= p('job_name') %>/ssl/CA.crt \
   --authenticationDatabase '$external' \
   --authenticationMechanism MONGODB-X509 "$@"
