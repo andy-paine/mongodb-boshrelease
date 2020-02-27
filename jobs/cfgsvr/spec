@@ -27,6 +27,7 @@ provides:
 templates:
   config/mongodb.conf.erb: config/mongodb.conf
   shared/bin/pre-start.erb: bin/pre-start
+  shared/bin/drain.erb: bin/drain
   shared/bin/add_to_replicaset.sh.erb: bin/post-start
   shared/bin/drain.erb: bin/drain.erb
   shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert

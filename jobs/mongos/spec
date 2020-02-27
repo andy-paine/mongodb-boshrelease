@@ -18,11 +18,11 @@ provides:
 
 templates:
   config/mongodb.conf.erb: config/mongodb.conf
+  config/bpm.yml.erb: config/bpm.yml
   shared/bin/pre-start.erb: bin/pre-start
   shared/bin/generate_ssl_cert.sh.erb: bin/generate_ssl_cert
   shared/bin/create_users.sh.erb: bin/post-start
   shared/bin/mongo.erb: bin/mongo
-  shared/config/bpm.yml.erb: config/bpm.yml
   shared/ssl/CA.key.erb: ssl/CA.key
   shared/ssl/CA.crt.erb: ssl/CA.crt
 
