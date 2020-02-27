@@ -13,7 +13,7 @@ consumes:
     optional: true
   - name: mongos
     type: mongos
-    optional: true 
+    optional: true
 packages:
   - golang-1.9-linux
   - mongodb-acceptance-tests
@@ -26,7 +26,12 @@ templates:
 properties:
   mongo_test_suite:
     description: Test suites to run (["readwrite"] or ["replicaset"])
-    default: ["readwrite"] 
+    default: ["readwrite"]
   timeout_scale:
     description: Timeout scale to be used by the acceptance tests errand
     default: 1.0
+  user.username:
+    description: User to execute tests under. Must be able to create new users.
+    default: root
+  user.password:
+    description: Password for user to execute tests under.

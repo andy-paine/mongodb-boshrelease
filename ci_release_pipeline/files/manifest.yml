@@ -14,13 +14,9 @@ instance_groups:
   - name: cfgsvr
     release: mongodb-services
     properties:
-      admin_password: myP@ssword
-      admin_username: smarsh
       port: 23758
       replication:
         replica_set_name: mongo-config-shared
-      root_password: rootpassword
-      root_username: root
       server_certificate:
         certificate: ((mongo_ca.certificate))
         private_key: ((mongo_ca.private_key))
@@ -50,8 +46,8 @@ instance_groups:
         roles:
         - role: root
           db: admin
-      - name: admin
-        password: ((admin_password))
+      - name: smarsh
+        password: myP@ssword
         roles:
         - role: userAdminAnyDatabase
           db: admin
@@ -104,6 +100,9 @@ instance_groups:
     release: mongodb-services
     properties:
       mongo_test_suite: [ readwrite, replicaset ]
+      user:
+        username: root
+        password: ((root_password))
 name: mongodb
 releases:
 - name: mongodb-services

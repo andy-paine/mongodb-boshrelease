@@ -11,10 +11,6 @@ provides:
   - name: config-server
     type: cfgsvr
     properties:
-    - root_username
-    - root_password
-    - admin_username
-    - admin_password
     - port
     - replication.replica_set_name
     - server_certificate.private_key
@@ -106,20 +102,6 @@ properties:
         size of the oplog.
 
         Ref: https://docs.mongodb.com/manual/reference/configuration-options/#replication.oplogSizeMB
-  admin_username:
-      default: MongoAdmin
-      description: |
-        Username of the default admin user.
-  admin_password:
-      description: |
-        Password for the admin user, in clear text.
-  root_username:
-      default: MongoRoot
-      description: |
-        Username of the default root user.
-  root_password:
-      description: |
-        Password for the root user, in clear text.
   server_certificate.ca:
       default: "NOT INITIALIZED"
       description: Mongodb certificate for ttl/ssl auth - CA part

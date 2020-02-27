@@ -42,7 +42,7 @@ properties:
 
   users:
     default: []
-    description: Users to create in this replicaset
+    description: Local users to create in this replicaset. Only for operators - client users should be added in mongos job.
     example: |
       - name: admin
         password: foo

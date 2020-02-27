@@ -12,8 +12,6 @@ provides:
   - name: server
     type: mongod
     properties:
-    - root_username
-    - root_password
     - port
     - replication.replica_set_name
     - server_certificate.private_key
@@ -132,15 +130,6 @@ properties:
 
         This option overrides any value set to 'mongodb.mmap_v1_small_files' and
         'mongodb.replication.operation_log_max_size_mb'.
-
-  # Backwards compat for link in acceptance-tests
-  root_username:
-      default: root
-      description: |
-        Username of the default root user.
-  root_password:
-      description: |
-        Password for the root user, in clear text.
 
   # Do not change
   job_name:
