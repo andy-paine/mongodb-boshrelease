@@ -3,4 +3,5 @@ set -eu
 
 /var/vcap/jobs/shardsvr/bin/wait_for_mongo_to_be_alive
 /var/vcap/jobs/shardsvr/bin/add_to_replicaset
+/var/vcap/jobs/shardsvr/bin/mongos --eval 'sh.addShard("<%= p('replication.replica_set_name') %>/<%= spec.address %>:<%= p('port') %>")'
 /var/vcap/jobs/shardsvr/bin/create_users
