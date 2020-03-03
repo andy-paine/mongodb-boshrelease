@@ -23,6 +23,7 @@ provides:
 templates:
   bin/post-start.erb: bin/post-start
   bin/mongos.erb : bin/mongos
+  bin/wait_for_mongos_to_be_alive.sh.erb: bin/wait_for_mongos_to_be_alive
   config/mongodb.conf.erb: config/mongodb.conf
   shared/bin/pre-start.erb: bin/pre-start
   shared/bin/drain.erb: bin/drain

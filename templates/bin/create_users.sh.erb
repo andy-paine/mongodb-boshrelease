@@ -11,7 +11,10 @@ if (db.isMaster().ismaster) {
       roles: <%= JSON.dump user['roles'] %>
     })
   } else {
-    db.changeUserPassword("<%= user['name'] %>", "<%= user['password'] %>")
+    db.updateUser("<%= user['name'] %>", {
+      pwd: "<%= user['password'] %>",
+      roles: <%= JSON.dump user['roles'] %>
+    })
   }
   <% end %>
 }

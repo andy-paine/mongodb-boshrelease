@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -eu
+
+max_tries=10
+tries=1
+while [ $tries -lt $max_tries ]; do
+  echo "Trying to connect to Mongos - attempt $tries"
+  /var/vcap/jobs/shardsvr/bin/mongos --eval 'db.runCommand("ping").ok' && exit 0
+  sleep 5
+  tries=$((tries+1))
+done
+echo "Mongos failed to come up in time"
+exit 1
