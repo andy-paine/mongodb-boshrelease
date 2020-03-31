@@ -1,4 +1,0 @@
----
-- path: /instance_groups/name=mongod/azs
-  type: replace
-  value: ((azs-list))

@@ -71,7 +71,7 @@ jobs:
   - get: mongodb_bosh_release_git
     trigger: true
   - task: create_release
-    file: mongodb_bosh_release_git/ci_release_pipeline/tasks/create_release.yml
+    file: mongodb_bosh_release_git/ci/tasks/create_release.yml
     params:
       <<: *blobstore_credentials
   - put: mongodb_bosh_candidate_release_s3
@@ -99,7 +99,7 @@ jobs:
   - get: xenial_stemcell
   - get: old_xenial_stemcell
   - task: system_tests
-    file: mongodb_bosh_release_git/ci_release_pipeline/tasks/system_test.yml
+    file: mongodb_bosh_release_git/ci/tasks/system_test.yml
     privileged: true
     timeout: 90m
 
@@ -122,7 +122,7 @@ jobs:
     params:
       bump: final
   - task: create_final_release
-    file: mongodb_bosh_release_git/ci_release_pipeline/tasks/create_final_release.yml
+    file: mongodb_bosh_release_git/ci/tasks/create_final_release.yml
     params:
       <<: *blobstore_credentials
     privileged: true

@@ -14,4 +14,4 @@ outputs:
 - name: release_tarball
 
 run:
-  path: mongodb_bosh_release_git/ci_release_pipeline/tasks/create_release.sh
+  path: mongodb_bosh_release_git/ci/tasks/create_release.sh

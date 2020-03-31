@@ -12,4 +12,4 @@ inputs:
 - name: xenial_stemcell
 
 run:
-  path: mongodb_bosh_release_git/ci_release_pipeline/tasks/system_test.sh
+  path: mongodb_bosh_release_git/ci/tasks/system_test.sh
