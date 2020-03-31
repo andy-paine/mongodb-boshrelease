@@ -4,13 +4,15 @@
 
   * [Purpose](#purpose)
   * [What should the Release do](#what-should-the-release-do)
-  * [Packages versions summary](#packages-versions-summary)
+  * [Development](#development)
+    + [Cluster authentication](#cluster-authentication)
+    + [Users](#users)
   * [Installation](#installation)
     + [Clone the repository](#clone-the-repository)
-    + [Deployment manifests](#deployment-manifests)
-      - [Variables](#variables)
-    + [Operation files](#operation-files)
-    + [Deployment](#deployment)
+    + [Example manifests](#example-manifests)
+    + [Debugging](#debugging)
+    + [Scaling](#scaling)
+  * [Acceptance tests](#acceptance-tests)
   * [Broker](#broker)
     + [Mongodb Broker](#mongodb-broker-broker-job)
     + [Mongodb Broker Smoke Tests](#mongodb-broker-smoke-tests-broker-smoke-tests-job)
@@ -29,29 +31,43 @@
 This project is a [Mongodb](https://www.mongodb.com) [Bosh](http://bosh.io) release.
 The blobs are the provided ones from the mongodb community and are not compiled anymore. So the release can now only be deployed on an ubuntu stemcell.
 
-This version exclude the rocksdb engine, which is not supported anymore. 
+This version exclude the rocksdb engine, which is not supported anymore.
 
 ## What should the Release do
 
-> 
 * Configure a standalone or a set of standalone servers
-* Configure a replica set 
+* Configure a replica set
 * Configure a sharded cluster including config server and mongos
 * Complete requirements for mongodb servers ([production notes](https://docs.mongodb.org/manual/administration/production-notes/))
 * Install mongodb component (shell / tools / mongod)
-* Authentification using bosh/credhub generated passwords (could be disable)
 
-## Packages versions summary
+## Development
 
-* Mongodb database and modules version
+This release uses [BPM](https://github.com/cloudfoundry/bpm-release) for process management. This means there is no need for control scripts or any pidfile handling. The `monit` file instead tracks a pidfile created and managed by BPM and the control script is replaced by the `bpm.yml` config file. See the [docs on migrating to BPM](https://bosh.io/docs/bpm/transitioning/) for a more detailed description of what each file does.
 
-| Package         | Version     | Note                  |
-| --------------- | ----------- | --------------------- |
-| mongodb         | `3.6.6`    |                       |
-| ~~mongo-rocks~~ | ~~`3.4.7`~~ | Not supported anymore |
-| mongo-tools     | `3.6.12`    |                       |
-| ~~rocksdb~~     | ~~`3.4.7`~~ | Not supported anymore |
+### Templating
 
+Since most of the jobs in this release are running `mongod` or `mongos`, a lot of the configuration is similar too. To avoid repetition, there is a shared [templates](templates/) directory which is symlinked into each of the relevant jobs. Some editors will make the symlink look like it is a true subdirectory so be careful when editing any templates that the changes are relevant to all jobs using it.
+
+### Cluster authentication
+
+Components of the cluster authenticate with each other using [x509 membership authentication](https://docs.mongodb.com/manual/tutorial/configure-x509-member-authentication/). A shared CA is given to each VM which then issues itself a certificate from that CA. This allows for scaling up the cluster without having to add new certificates for members as only the CA is needed. The certificate for the CA can be given to clients that need to trust the cluster.
+
+### Users
+
+This release is capable of creating users within the cluster. This approach is encouraged to allow for the users to be properly source controlled and repeatably deployed. The `mongod`, `mongos` and `shardsvr` jobs are all capable of creating users by setting `users` job property in the following format.
+```yaml
+users:
+- name: root
+  password: ((root_password))
+  roles:
+  - { role: root, db: admin }
+- name: monitoring
+  password: ((monitoring_password))
+  roles:
+  - { role: clusterMonitor, db: admin }
+  - { role: read, db: local
+```
 
 ## Installation
 
@@ -61,51 +77,40 @@ This version exclude the rocksdb engine, which is not supported anymore.
 git clone --recursive https://github.com/orange-cloudfoundry/mongodb-boshrelease.git
 ```
 
-### Deployment manifests
+### Example manifests
 
-Two different base manifests are provided for single replicaset or sharded deployment and can be found in the `manifests` directory
+Two example manifests are provided for single replicaset or sharded deployment and can be found in the `manifests` directory. The manifest used for testing this release can be found in the [ci directory](ci/files/manifest.yml)
 
-#### Variables
+### Debugging
 
-Release include a `deployment-vars-template.yml` file, which includes all the needed variables for  the deployment. Just copy and fill the variables for your needs.
+Logs for all mongo cluster jobs are available in the `/var/vcap/sys/log/<job>/` directory or via `bosh logs`. To investigate the cluster, shell scripts which are pre-authenticated against the cluster are provided with the relevant jobs (see below).
+| Cluster type         | Run     |
+| --------------- | ----------- |
+| replicaset         | `/var/vcap/jobs/mongod/bin/mongo`    |
+| sharded         | `/var/vcap/jobs/mongos/bin/mongo`    |
 
+### Scaling
 
+All datastore components of the cluster contain [pre-start scripts](https://bosh.io/docs/pre-start/) and [drain scripts](https://bosh.io/docs/drain/) that allow them to gracefully enter and leave the cluster. This should allow for zero-downtime scaling in and out of the cluster but this should be tested in a pre-production environment first.
 
-### Operation files
+## Acceptance tests
 
-The release provides a set of operation files to enable or disable features. Operation files are located in the `operations`directory. This folder contains commons opsfiles and two subdirectories for sharding and replicaset  
+This release comes with an acceptance test errand for validating deployed clusters. See the [CI manfiest](ci/files/manifest.yml) for an example of how to configure this errand. You should include the following test suites for the relevant cluster types.
+> Note: The acceptance tests for replicasets and sharding require a user with `root` privileges in each of the replicasets.
 
-| Ops file                                      | feature                                                      | needed variable                                              | dependecies                                                  |
-| --------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| **rename-azs.yml**                            | *use specific azs*                                           | azs-list                                                     |                                                              |
-| **use-specific-mongodb-release.yml**          | *use a named uploaded mongodb release version instead of the latest one* | mongodb-release-version                                      |                                                              |
-| **use_mmapv1.yml**                            | *use mmapv1 engine instead of wiredtiger default*            |                                                              |                                                              |
-| **use-trusty.yml**                            | *use an ubuntu trusty stemcell instead of the xenial default* |                                                              |                                                              |
-| **use-specific-stemcell.yml**                 | *Use a specifically named stemcell version instead of the latest one* | stemcell-version                                             |                                                              |
-| **enable-mongodb-acceptance-test.yml**        | *Deploy the acceptance tests errand*                         | accept_vm_type                                               |                                                              |
-| **enable-mongodb-broker.yml**                 |                                                              | broker_vm_type<br />broker_persistent_disk_type<br />broker_catalog_yml |                                                              |
-| **enable-mongodb-broker-route-registrar.yml** |                                                              | cf.nats_host<br />cf.nats_password<br />cf.system_domain     | enable-mongodb-broker.yml                                    |
-| **enable-mongodb-broker-smoke-tests.yml**     |                                                              |                                                              | enable-mongodb-broker.yml<br />enable-mongodb-broker-route-registrar.yml |
-| **rename-broker-network.yml**                 | *use a specific network for the broker instead of the default one* |                                                              | enable-mongodb-broker.yml                                    |
-| **enable-prometheus-exporter.yml**            | *deploy the prometheus mongodb exporter from prometheus-addons bosh release* | clustermonitor_username                                      |                                                              |
-|                                               |                                                              |                                                              |                                                              |
-
-**Note that operations directory include some others opsfiles like ssl ones that are not fully tested yet and should not be use**
-
-### Deployment
-
-```sh
-bosh create-release
-bosh upload-release
-bosh -d [deployment name] -n deploy manifests/manifest[rs|shard].yml <-o operations/[operation file name] -o ...> -l <deployment-vars-file> <--vars-store=credentials.yml >
-```
-*--vars-store=credentials.yml is uneeded if you are using credhub*
+| Cluster type | Run |
+| --------------- | ----------- |
+| single instance | replicaset |
+| replicaset | readwrite, replicaset |
+| sharded (single shard) | readwrite, replicaset |
+| sharded (multiple shards) | readwrite, replicaset, sharding |
 
 ## Broker
+> Note: The broker has not been tested since this release was rewritten for Smarsh. Use at your own risk.
 
 ### Mongodb Broker (broker job)
 
-The mongodb broker implements the 5 REST endpoints required by Cloud Foundry to write V2 services : 
+The mongodb broker implements the 5 REST endpoints required by Cloud Foundry to write V2 services :
 * Catalog management in order to register the broker to the platform
 * Provisioning in order to create resource in the mongodb server
 * Deprovisioning in order to release resource previously allocated
@@ -118,7 +123,7 @@ The mongodb broker smoke test acts as an end user developper who wants to host i
 
 For that, it relies on a sample mongodb application : https://github.com/JCL38-ORANGE/cf-mongodb-example-app
 
-The following steps are performed by the smoke tests job : 
+The following steps are performed by the smoke tests job :
 * Authentication on Cloud Foundry by targeting org and space (cf auth and cf target)
 * Deployment of the sample mongodb application (cf push)
 * Provisioning of the service (cf create-service)
@@ -136,10 +141,10 @@ For the moment, only 1 default plan available for shared Mongodb.
 ### Broker registration
 
 The broker uses HTTP basic authentication to authenticate clients. The `cf create-service-broker` command expects the credentials for the cloud
-controller to authenticate itself to the broker. 
+controller to authenticate itself to the broker.
 
 ```bash
-cf create-service-broker p-mongodb-broker <user> <password> <url> 
+cf create-service-broker p-mongodb-broker <user> <password> <url>
 cf enable-service-access mongodb
 ```
 
@@ -164,16 +169,3 @@ cf unbind-service mongodb-example-app mongodb-instance
 ```bash
 cf delete-service mongodb-instance
 ```
-
-## Contributing
-
-### Ruby Env Setup
-
-This my setup:
-
-    brew install ruby-build chruby
-    ruby-build 2.4.2 --install-dir ~/.rubies/ruby-2.4.2
-    gem update --system
-    gem install bundler
-    bundle install
-

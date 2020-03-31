@@ -1,49 +1,6 @@
 MongoDB release test plan
 =========================
 
-Unit tests
-----------
-
-### Templates to tests
-
-Included:
-
-- `mongod.conf`
-- `mongod_bootstrap.conf`
-- `pre-start`
-- `create_admin_users.js`
-- `initiate_rs.js`
-
-
-Excluded:
-
-- `mongoadmin.sh`
-
-
-Rendering technologies:
-
-1. Test templates rendering with `render.rb` (with `bosh-template` Gem v1.x).
-2. Test templates with `bosh-template` 2.0.0 Gem
-
-
-Run ShellCheck on Bash scripts.
-
-
-### Configurations
-
-1. Mandatory
-
-    - replication or standalone
-    - test various engines: wiredTiger, mmapv1.
-
-2. Optional
-
-    - test various engines: RocksDB
-    - with SSL or not
-    - config server
-    - shard server
-
-
 Acceptance tests
 ----------------
 

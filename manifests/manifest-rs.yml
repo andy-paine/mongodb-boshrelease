@@ -2,8 +2,8 @@
 name: ((deployment_name))
 
 releases:
-  - name: &mongodb_release ((release_name))
-    version: latest
+- name: &mongodb_release ((release_name))
+  version: latest
 
 update:
   canaries: 1
@@ -21,38 +21,45 @@ instance_groups:
 - name: mongod
   release: *mongodb_release
   azs: [z1]
-  instances: ((nb_instances))
-  vm_type: ((vm_type))
+  instances: 3
+  vm_type: default
   env:
     bosh:
       swap_size: 0
     persistent_disk_fs: xfs
   stemcell: *stemcell
-  networks: 
-    - name: ((deployments-network))
-  persistent_disk_type: ((persistent_disk_type))
+  networks:
+    - name: default
+  persistent_disk_type: default
   jobs:
   - name: mongod
+  - name: mongod
     release: *mongodb_release
-    consumes:
-      server: {from: deployment-server}
-    provides:
-      server: {as: deployment-server}
-    properties: 
-      admin_password: ((admin_password))
-      root_password:  ((root_password))
-      require_ssl:  0
+    properties:
+      server_certificate:
+        certificate: ((mongo_ca.certificate))
+        private_key: ((mongo_ca.private_key))
       replication:
-        enable: 1
-        key: ((keyfile_content))
+        replica_set_name: mongo-data-shared
+      users:
+      - name: root
+        password: ((root_password))
+        roles:
+        - role: root
+          db: admin
+      - name: admin
+        password: ((admin_password))
+        roles:
+        - role: userAdminAnyDatabase
+          db: admin
 
 variables:
 - name: admin_password
   type: password
 - name: root_password
   type: password
-- name: keyfile_content
-  type: password
-  options: 
-    length: 200  
-
+- name: mongo_ca
+  type: certificate
+  options:
+    is_ca: true
+    common_name: MongoDB CA
