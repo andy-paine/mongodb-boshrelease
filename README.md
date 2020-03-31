@@ -31,7 +31,7 @@
 This project is a [Mongodb](https://www.mongodb.com) [Bosh](http://bosh.io) release.
 The blobs are the provided ones from the mongodb community and are not compiled anymore. So the release can now only be deployed on an ubuntu stemcell.
 
-This version exclude the rocksdb engine, which is not supported anymore.
+This version excludes the rocksdb engine, which is not supported anymore.
 
 ## What should the Release do
 
@@ -47,7 +47,8 @@ This release uses [BPM](https://github.com/cloudfoundry/bpm-release) for process
 
 ### Templating
 
-Since most of the jobs in this release are running `mongod` or `mongos`, a lot of the configuration is similar too. To avoid repetition, there is a shared [templates](templates/) directory which is symlinked into each of the relevant jobs. Some editors will make the symlink look like it is a true subdirectory so be careful when editing any templates that the changes are relevant to all jobs using it.
+Since most of the jobs in this release are running `mongod` or `mongos`, a lot of the configuration is similar too. To avoid repetition, there is a shared [templates](templates/) directory which is symlinked into each of the relevant jobs.
+> Note: Some editors (e.g. VSCode) will make the symlink look like it is a true subdirectory so be careful when editing any templates that the changes are relevant to all jobs using it.
 
 ### Cluster authentication
 
@@ -119,7 +120,7 @@ The mongodb broker implements the 5 REST endpoints required by Cloud Foundry to 
 
 ### Mongodb Broker Smoke Tests (broker-smoke-tests job)
 
-The mongodb broker smoke test acts as an end user developper who wants to host its application in a cloud foundry.
+The mongodb broker smoke test acts as an end user developer who wants to host its application in a cloud foundry.
 
 For that, it relies on a sample mongodb application : https://github.com/JCL38-ORANGE/cf-mongodb-example-app
 
