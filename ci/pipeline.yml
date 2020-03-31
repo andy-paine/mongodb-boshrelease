@@ -23,7 +23,7 @@ resources:
     - releases
     - .final_builds
     - README.md
-    branch: bpm-rewrite
+    branch: master
     uri: https://github.com/Smarsh/mongodb-boshrelease.git
 
 - name: mongodb_bosh_release_version
