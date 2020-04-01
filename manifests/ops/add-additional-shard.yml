@@ -1,0 +1,49 @@
+- type: replace
+  path: /instance_groups/name=shard-0/jobs/name=shardsvr/provides?
+  value:
+    shard-server:
+      as: shard-server-0
+
+- type: replace
+  path: /instance_groups/name=shard-0/jobs/name=shardsvr/consumes?
+  value:
+    shard-server:
+      from: shard-server-0
+
+- type: replace
+  path: /instance_groups/-
+  value:
+    name: shard-1
+    azs: [z1]
+    instances: 3
+    vm_type: default
+    env:
+      bosh:
+        swap_size: 0
+    stemcell: ubuntu
+    networks:
+    - name: default
+    persistent_disk_type: default
+    env:
+      persistent_disk_fs: xfs
+    jobs:
+    - name: shardsvr
+      provides:
+        shard-server:
+          as: shard-server-1
+      consumes:
+        shard-server:
+          from: shard-server-1
+      release: mongodb-services
+      properties:
+        server_certificate:
+          certificate: ((mongo_ca.certificate))
+          private_key: ((mongo_ca.private_key))
+        replication:
+          replica_set_name: mongo-data-shard-1
+        users:
+        - name: root
+          password: ((root_password))
+          roles:
+          - role: root
+            db: admin

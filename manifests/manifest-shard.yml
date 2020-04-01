@@ -1,7 +1,7 @@
 name: ((deployment_name))
 
 releases:
-- name: &mongodb_release ((release_name))
+- name: mongodb-services
   version: latest
 
 update:
@@ -12,20 +12,19 @@ update:
   serial: false
 
 stemcells:
-- alias: &stemcell ubuntu
+- alias: ubuntu
   os: ubuntu-xenial
   version: latest
 
 instance_groups:
 - name: cfgsvr
-  release: *mongodb_release
   azs: [z1]
   instances: 3
   vm_type: default
   env:
     bosh:
       swap_size: 0
-  stemcell: *stemcell
+  stemcell: ubuntu
   networks:
   - name: default
   persistent_disk_type: default
@@ -35,7 +34,7 @@ instance_groups:
   - name: bpm
     release: bpm
   - name: cfgsvr
-    release: *mongodb_release
+    release: mongodb-services
     properties:
       port: 23758
       replication:
@@ -44,7 +43,7 @@ instance_groups:
         certificate: ((mongo_ca.certificate))
         private_key: ((mongo_ca.private_key))
   - name: mongos
-    release: *mongodb_release
+    release: mongodb-services
     properties:
       server_certificate:
         certificate: ((mongo_ca.certificate))
@@ -62,14 +61,13 @@ instance_groups:
           db: admin
 
 - name: shard-0
-  release: *mongodb_release
   azs: [z1]
   instances: 3
   vm_type: default
   env:
     bosh:
       swap_size: 0
-  stemcell: *stemcell
+  stemcell: ubuntu
   networks:
   - name: default
   persistent_disk_type: default
@@ -77,13 +75,13 @@ instance_groups:
     persistent_disk_fs: xfs
   jobs:
   - name: shardsvr
-    release: *mongodb_release
+    release: mongodb-services
     properties:
       server_certificate:
         certificate: ((mongo_ca.certificate))
         private_key: ((mongo_ca.private_key))
       replication:
-        replica_set_name: mongo-data-shared
+        replica_set_name: mongo-data-shard-0
       users:
       - name: root
         password: ((root_password))

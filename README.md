@@ -5,13 +5,18 @@
   * [Purpose](#purpose)
   * [What should the Release do](#what-should-the-release-do)
   * [Development](#development)
+    + [Building](#building)
+    + [Templating](#templating)
     + [Cluster authentication](#cluster-authentication)
     + [Users](#users)
+    + [Upgrading MongoDB](#upgrading-mongodb)
+    + [CI Pipeline](#ci-pipeline)
   * [Installation](#installation)
     + [Clone the repository](#clone-the-repository)
     + [Example manifests](#example-manifests)
     + [Debugging](#debugging)
     + [Scaling](#scaling)
+      + [Adding shards](#adding-shards)
   * [Acceptance tests](#acceptance-tests)
   * [Broker](#broker)
     + [Mongodb Broker](#mongodb-broker-broker-job)
@@ -23,8 +28,6 @@
     + [Service binding](#service-binding)
     + [Service unbinding](#service-unbinding)
     + [Service deprovisioning](#service-deprovisioning)
-  * [Contributing](#contributing)
-    + [Ruby Env Setup](#ruby-env-setup)
 
 ## Purpose
 
@@ -44,6 +47,11 @@ This version excludes the rocksdb engine, which is not supported anymore.
 ## Development
 
 This release uses [BPM](https://github.com/cloudfoundry/bpm-release) for process management. This means there is no need for control scripts or any pidfile handling. The `monit` file instead tracks a pidfile created and managed by BPM and the control script is replaced by the `bpm.yml` config file. See the [docs on migrating to BPM](https://bosh.io/docs/bpm/transitioning/) for a more detailed description of what each file does.
+
+### Building
+
+To build the release, you will need to sync the blobs from S3. Ensure you have valid AWS credentials in your environment for the `smarsh-bosh-release-blobs` bucket then run `bosh sync-blobs`. After syncing the blobs you can run `bosh create-release --force` to build a new release.
+> Note: This will build a dev release which should **not** be used in production. Final releases are continuously built from master and published to the `smarsh-bosh-releases` S3 bucket.
 
 ### Templating
 
@@ -70,12 +78,20 @@ users:
   - { role: read, db: local
 ```
 
+### Upgrading MongoDB
+
+To upgrade the version of MongoDB, a new blob will need to be added. Download the new `TGZ` package of MongoDB from the [MongoDB download center](https://www.mongodb.com/download-center/community). To add this blob, run `bosh add-blob <path_to_tarball.tgz> mongodb/mongodb-linux-x86_64-<new_version>.tar.gz`. The old blob should then be removed with `bosh remove-blob mongodb/mongodb-linux-x86_64-<old_version>.tar.gz`. To upload the new blob to the blobstore, ensure you have valid AWS credentials in your environment for the `smarsh-bosh-release-blobs` bucket then run `bosh upload-blobs`. Commit and push the changes to `blobs.yml` and check the pipeline successfully built the new release.
+
+### CI Pipeline
+
+This release is continuously built from master on the Smarsh prod Concourse. The pipeline lives in [ci/pipeline.yml](ci/pipeline.yml).
+
 ## Installation
 
 ### Clone the repository
 
 ```sh
-git clone --recursive https://github.com/orange-cloudfoundry/mongodb-boshrelease.git
+git clone --recursive https://github.com/Smarsh/mongodb-boshrelease.git
 ```
 
 ### Example manifests
@@ -92,7 +108,11 @@ Logs for all mongo cluster jobs are available in the `/var/vcap/sys/log/<job>/` 
 
 ### Scaling
 
-All datastore components of the cluster contain [pre-start scripts](https://bosh.io/docs/pre-start/) and [drain scripts](https://bosh.io/docs/drain/) that allow them to gracefully enter and leave the cluster. This should allow for zero-downtime scaling in and out of the cluster but this should be tested in a pre-production environment first.
+All datastore components of the cluster contain [pre-start scripts](https://bosh.io/docs/pre-start/) and [drain scripts](https://bosh.io/docs/drain/) that allow them to gracefully enter and leave the cluster. This should allow for zero-downtime scaling in and out of the cluster but this should be tested in a pre-production environment first. To expand the storage of a replicaset, increase the size of the disk allocated to the BOSH VMs.
+
+#### Adding shards
+
+To expand the storage of a sharded cluster, additional shards can be added. To add a new shard, a new instance group running `shardsvr` should be created and the BOSH links of the existing `shardsvr` instance grpups updated to use [explicit self links](https://bosh.io/docs/links/#self). An example [ops file](https://bosh.io/docs/cli-ops-files/) to add an additional, identical shard to the [sharded example manifest](manifests/manifest-shard.yml) can be found in [manifests/ops/add-additional-shard.yml](manifests/ops/add-additional-shard.yml).
 
 ## Acceptance tests
 
