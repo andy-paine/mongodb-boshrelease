@@ -11,8 +11,7 @@
     + [Users](#users)
     + [Upgrading MongoDB](#upgrading-mongodb)
     + [CI Pipeline](#ci-pipeline)
-  * [Installation](#installation)
-    + [Clone the repository](#clone-the-repository)
+  * [Usage](#usage)
     + [Example manifests](#example-manifests)
     + [Debugging](#debugging)
     + [Scaling](#scaling)
@@ -47,6 +46,11 @@ This version excludes the rocksdb engine, which is not supported anymore.
 ## Development
 
 This release uses [BPM](https://github.com/cloudfoundry/bpm-release) for process management. This means there is no need for control scripts or any pidfile handling. The `monit` file instead tracks a pidfile created and managed by BPM and the control script is replaced by the `bpm.yml` config file. See the [docs on migrating to BPM](https://bosh.io/docs/bpm/transitioning/) for a more detailed description of what each file does.
+
+This release uses submodules. These can be cloned by running:
+```sh
+git submodule update --init --recursive
+```
 
 ### Building
 
@@ -86,17 +90,50 @@ To upgrade the version of MongoDB, a new blob will need to be added. Download th
 
 This release is continuously built from master on the Smarsh prod Concourse. The pipeline lives in [ci/pipeline.yml](ci/pipeline.yml).
 
-## Installation
+## Usage
 
-### Clone the repository
+### Releases
 
-```sh
-git clone --recursive https://github.com/Smarsh/mongodb-boshrelease.git
+Final releases for MongoDB are uploaded to the `smarsh-bosh-releases` S3 bucket. To use these releases, either download the relevant artifact from S3 and run `bosh upload-release <path_to_release.tgz>` or add the final release to Concourse to upload to the director. An example Concourse pipeline may look like:
+```yaml
+resources:
+- name: mongodb_release
+  type: s3
+  source:
+    regexp: mongodb/mongodb-(\d*.\d*.\d*).tgz
+    bucket: smarsh-bosh-releases
+    access_key_id: ((smarsh_bosh_releases_user.access_key_id))
+    secret_access_key: ((smarsh_bosh_releases_user.secret_access_key))
+- name: bpm_release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/bpm-release
+...
+
+jobs:
+- name: deploy_mongodb
+  serial: true
+  plan:
+  - get: mongodb_release
+    trigger: true
+  - get: bpm_release
+  - get: mongodb_manifest_repo
+    trigger: true
+  - put: mongodb_deployment
+    params:
+      manifest: mongodb_manifest_repo/manifest.yml
+      releases:
+      - mongodb_minio/mongodb-*tgz
+      - bpm_minio/bpm-*tgz
+      vars:
+        mongo_ca.private_key: |
+          ((mongo_ca.private_key))
+        etc.
 ```
 
 ### Example manifests
 
-Two example manifests are provided for single replicaset or sharded deployment and can be found in the `manifests` directory. The manifest used for testing this release can be found in the [ci directory](ci/files/manifest.yml)
+Two example manifests are provided for single replicaset or sharded deployment and can be found in the `manifests` directory. The manifest used for testing this release can be found in the [ci directory](ci/files/manifest.yml).
 
 ### Debugging
 
